@@ -196,72 +196,42 @@ const ProductDetail: React.FC = () => {
                 {isAuthenticated && safetyCheck && (
                     <Box
                         sx={{
-                            backgroundColor: safetyCheck.is_safe ? '#ECFDF5' : '#FEF2F2',
-                            border: `2px solid ${safetyCheck.is_safe ? '#10B981' : '#EF4444'}`,
-                            borderRadius: '16px',
-                            p: 4,
-                            position: 'relative',
-                            '&::before': {
-                                content: '""',
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                height: '4px',
-                                backgroundColor: safetyCheck.is_safe ? '#10B981' : '#EF4444',
-                                borderRadius: '16px 16px 0 0'
-                            }
+                            borderLeft: `4px solid ${safetyCheck.is_safe ? '#10B981' : '#EF4444'}`,
+                            pl: 3,
+                            py: 2
                         }}
                     >
-                        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-                            <Box
-                                sx={{
-                                    width: 48,
-                                    height: 48,
-                                    backgroundColor: safetyCheck.is_safe ? '#10B981' : '#EF4444',
-                                    borderRadius: '12px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    flexShrink: 0
-                                }}
-                            >
-                                {safetyCheck.is_safe ? (
-                                    <CheckCircle sx={{ color: 'white', fontSize: 24 }} />
-                                ) : (
-                                    <Cancel sx={{ color: 'white', fontSize: 24 }} />
-                                )}
-                            </Box>
-                            <Box sx={{ flex: 1 }}>
-                                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: '#1F2937' }}>
-                                    {safetyCheck.is_safe ? 'Product appears safe for you' : 'Warning: Potential allergen conflicts'}
-                                </Typography>
-                                {!safetyCheck.is_safe && safetyCheck.potential_conflicts.length > 0 && (
-                                    <Box sx={{ mb: 2 }}>
-                                        <Typography variant="body2" sx={{ mb: 2, color: '#6B7280', fontWeight: 500 }}>
-                                            Potential conflicts with your allergies:
-                                        </Typography>
-                                        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
-                                            {safetyCheck.potential_conflicts.map((conflict, index) => (
-                                                <Chip
-                                                    key={index}
-                                                    label={conflict}
-                                                    sx={{
-                                                        backgroundColor: '#FEE2E2',
-                                                        color: '#DC2626',
-                                                        border: '1px solid #FECACA',
-                                                        fontWeight: 600
-                                                    }}
-                                                />
-                                            ))}
-                                        </Stack>
-                                    </Box>
-                                )}
-                                <Typography variant="body2" sx={{ color: '#6B7280', lineHeight: 1.5 }}>
-                                    Always double-check the ingredient list and consult with healthcare professionals for severe allergies.
-                                </Typography>
-                            </Box>
-                        </Box>
+                        <Typography 
+                            variant="body1" 
+                            sx={{ 
+                                fontWeight: 600, 
+                                mb: safetyCheck.is_safe ? 0 : 1.5, 
+                                color: safetyCheck.is_safe ? '#10B981' : '#EF4444'
+                            }}
+                        >
+                            {safetyCheck.is_safe ? '✓ Safe for your allergies' : '⚠ Contains allergens from your profile'}
+                        </Typography>
+                        {!safetyCheck.is_safe && safetyCheck.potential_conflicts.length > 0 && (
+                            <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
+                                {safetyCheck.potential_conflicts.map((conflict, index) => (
+                                    <Typography
+                                        key={index}
+                                        variant="body2"
+                                        sx={{
+                                            color: '#DC2626',
+                                            fontWeight: 500,
+                                            backgroundColor: '#FEF2F2',
+                                            px: 2,
+                                            py: 0.5,
+                                            borderRadius: '16px',
+                                            fontSize: '0.875rem'
+                                        }}
+                                    >
+                                        {conflict}
+                                    </Typography>
+                                ))}
+                            </Stack>
+                        )}
                     </Box>
                 )}
 
