@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev-screen": "screen -dmS shmallergies-vite vite --host shmallergies.test --port 2812",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
