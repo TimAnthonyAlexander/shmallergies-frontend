@@ -4,7 +4,6 @@ import {
     Box,
     Container,
     Typography,
-    Paper,
     Stack,
     Button,
     Card,
@@ -92,7 +91,7 @@ const ProductDetail: React.FC = () => {
 
     if (isLoading) {
         return (
-            <Container maxWidth="lg" sx={{ py: 4, display: 'flex', justifyContent: 'center' }}>
+            <Container maxWidth="lg" sx={{ py: 6, display: 'flex', justifyContent: 'center' }}>
                 <LoadingSpinner size="large" />
             </Container>
         );
@@ -100,18 +99,25 @@ const ProductDetail: React.FC = () => {
 
     if (error) {
         return (
-            <Container maxWidth="lg" sx={{ py: 4 }}>
-                <Stack spacing={3}>
-                    <Breadcrumbs>
-                        <Button
-                            component={Link}
-                            to="/products"
-                            startIcon={<ArrowBack />}
-                            color="primary"
-                        >
-                            Back to Products
-                        </Button>
-                    </Breadcrumbs>
+            <Container maxWidth="lg" sx={{ py: 6 }}>
+                <Stack spacing={4}>
+                    <Button
+                        component={Link}
+                        to="/products"
+                        startIcon={<ArrowBack />}
+                        sx={{
+                            alignSelf: 'flex-start',
+                            color: '#10B981',
+                            '&:hover': {
+                                backgroundColor: '#F0FDF4'
+                            },
+                            borderRadius: '12px',
+                            textTransform: 'none',
+                            fontWeight: 600
+                        }}
+                    >
+                        Back to Products
+                    </Button>
                     <ErrorMessage message={error} />
                 </Stack>
             </Container>
@@ -120,21 +126,42 @@ const ProductDetail: React.FC = () => {
 
     if (!product) {
         return (
-            <Container maxWidth="lg" sx={{ py: 4 }}>
-                <Stack spacing={3}>
-                    <Breadcrumbs>
-                        <Button
-                            component={Link}
-                            to="/products"
-                            startIcon={<ArrowBack />}
-                            color="primary"
+            <Container maxWidth="lg" sx={{ py: 6 }}>
+                <Stack spacing={4}>
+                    <Button
+                        component={Link}
+                        to="/products"
+                        startIcon={<ArrowBack />}
+                        sx={{
+                            alignSelf: 'flex-start',
+                            color: '#10B981',
+                            '&:hover': {
+                                backgroundColor: '#F0FDF4'
+                            },
+                            borderRadius: '12px',
+                            textTransform: 'none',
+                            fontWeight: 600
+                        }}
+                    >
+                        Back to Products
+                    </Button>
+                    <Box sx={{ textAlign: 'center', py: 8 }}>
+                        <Box
+                            sx={{
+                                width: 80,
+                                height: 80,
+                                mx: 'auto',
+                                mb: 3,
+                                backgroundColor: '#F3F4F6',
+                                borderRadius: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
                         >
-                            Back to Products
-                        </Button>
-                    </Breadcrumbs>
-                    <Box sx={{ textAlign: 'center', py: 6 }}>
-                        <Package sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-                        <Typography variant="h6" color="text.secondary">
+                            <Package sx={{ fontSize: 40, color: '#9CA3AF' }} />
+                        </Box>
+                        <Typography variant="h5" sx={{ color: '#6B7280', fontWeight: 600 }}>
                             Product not found
                         </Typography>
                     </Box>
@@ -144,70 +171,145 @@ const ProductDetail: React.FC = () => {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-            <Stack spacing={4}>
+        <Container maxWidth="lg" sx={{ py: 6 }}>
+            <Stack spacing={6}>
                 {/* Navigation */}
-                <Breadcrumbs>
-                    <Button
-                        component={Link}
-                        to="/products"
-                        startIcon={<ArrowBack />}
-                        color="primary"
-                    >
-                        Back to Products
-                    </Button>
-                </Breadcrumbs>
+                <Button
+                    component={Link}
+                    to="/products"
+                    startIcon={<ArrowBack />}
+                    sx={{
+                        alignSelf: 'flex-start',
+                        color: '#10B981',
+                        '&:hover': {
+                            backgroundColor: '#F0FDF4'
+                        },
+                        borderRadius: '12px',
+                        textTransform: 'none',
+                        fontWeight: 600
+                    }}
+                >
+                    Back to Products
+                </Button>
 
                 {/* Safety Check Banner */}
                 {isAuthenticated && safetyCheck && (
-                    <Alert
-                        severity={safetyCheck.is_safe ? 'success' : 'error'}
-                        icon={safetyCheck.is_safe ? <CheckCircle /> : <Cancel />}
+                    <Box
+                        sx={{
+                            backgroundColor: safetyCheck.is_safe ? '#ECFDF5' : '#FEF2F2',
+                            border: `2px solid ${safetyCheck.is_safe ? '#10B981' : '#EF4444'}`,
+                            borderRadius: '16px',
+                            p: 4,
+                            position: 'relative',
+                            '&::before': {
+                                content: '""',
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                height: '4px',
+                                backgroundColor: safetyCheck.is_safe ? '#10B981' : '#EF4444',
+                                borderRadius: '16px 16px 0 0'
+                            }
+                        }}
                     >
-                        <Typography variant="subtitle1" gutterBottom>
-                            {safetyCheck.is_safe ? 'Product appears safe for you' : 'Warning: Potential allergen conflicts'}
-                        </Typography>
-                        {!safetyCheck.is_safe && safetyCheck.potential_conflicts.length > 0 && (
-                            <Box sx={{ mt: 1, mb: 2 }}>
-                                <Typography variant="body2" gutterBottom>
-                                    Potential conflicts with your allergies:
-                                </Typography>
-                                <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
-                                    {safetyCheck.potential_conflicts.map((conflict, index) => (
-                                        <Chip
-                                            key={index}
-                                            label={conflict}
-                                            size="small"
-                                            color="error"
-                                            variant="outlined"
-                                        />
-                                    ))}
-                                </Stack>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                            <Box
+                                sx={{
+                                    width: 48,
+                                    height: 48,
+                                    backgroundColor: safetyCheck.is_safe ? '#10B981' : '#EF4444',
+                                    borderRadius: '12px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0
+                                }}
+                            >
+                                {safetyCheck.is_safe ? (
+                                    <CheckCircle sx={{ color: 'white', fontSize: 24 }} />
+                                ) : (
+                                    <Cancel sx={{ color: 'white', fontSize: 24 }} />
+                                )}
                             </Box>
-                        )}
-                        <Typography variant="body2">
-                            Always double-check the ingredient list and consult with healthcare professionals for severe allergies.
-                        </Typography>
-                    </Alert>
+                            <Box sx={{ flex: 1 }}>
+                                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: '#1F2937' }}>
+                                    {safetyCheck.is_safe ? 'Product appears safe for you' : 'Warning: Potential allergen conflicts'}
+                                </Typography>
+                                {!safetyCheck.is_safe && safetyCheck.potential_conflicts.length > 0 && (
+                                    <Box sx={{ mb: 2 }}>
+                                        <Typography variant="body2" sx={{ mb: 2, color: '#6B7280', fontWeight: 500 }}>
+                                            Potential conflicts with your allergies:
+                                        </Typography>
+                                        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
+                                            {safetyCheck.potential_conflicts.map((conflict, index) => (
+                                                <Chip
+                                                    key={index}
+                                                    label={conflict}
+                                                    sx={{
+                                                        backgroundColor: '#FEE2E2',
+                                                        color: '#DC2626',
+                                                        border: '1px solid #FECACA',
+                                                        fontWeight: 600
+                                                    }}
+                                                />
+                                            ))}
+                                        </Stack>
+                                    </Box>
+                                )}
+                                <Typography variant="body2" sx={{ color: '#6B7280', lineHeight: 1.5 }}>
+                                    Always double-check the ingredient list and consult with healthcare professionals for severe allergies.
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Box>
                 )}
 
                 {/* Safety Check Loading */}
                 {isAuthenticated && isCheckingSafety && (
-                    <Alert severity="info" icon={<LoadingSpinner size="small" />}>
-                        Checking product safety for your allergies...
-                    </Alert>
+                    <Box
+                        sx={{
+                            backgroundColor: '#F0F9FF',
+                            border: '2px solid #0EA5E9',
+                            borderRadius: '16px',
+                            p: 4,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2
+                        }}
+                    >
+                        <LoadingSpinner size="small" />
+                        <Typography variant="body1" sx={{ color: '#1F2937', fontWeight: 500 }}>
+                            Checking product safety for your allergies...
+                        </Typography>
+                    </Box>
                 )}
 
                 {/* Product Header */}
-                <Paper sx={{ p: 3 }}>
+                <Box
+                    sx={{
+                        backgroundColor: '#FAFAFA',
+                        border: '1px solid #F3F4F6',
+                        borderRadius: '20px',
+                        p: 4,
+                        overflow: 'hidden'
+                    }}
+                >
                     <Box sx={{
                         display: 'grid',
                         gridTemplateColumns: { xs: '1fr', lg: '1fr 2fr' },
-                        gap: 4
+                        gap: 6
                     }}>
                         {/* Product Image */}
                         <Box>
-                            <Card>
+                            <Box
+                                sx={{
+                                    borderRadius: '16px',
+                                    overflow: 'hidden',
+                                    backgroundColor: 'white',
+                                    border: '1px solid #F3F4F6'
+                                }}
+                            >
                                 {product.ingredient_image_url ? (
                                     <CardMedia
                                         component="img"
@@ -223,32 +325,71 @@ const ProductDetail: React.FC = () => {
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            backgroundColor: 'grey.100'
+                                            backgroundColor: '#F9FAFB'
                                         }}
                                     >
-                                        <Package sx={{ fontSize: 64, color: 'grey.400' }} />
+                                        <Package sx={{ fontSize: 48, color: '#D1D5DB' }} />
                                     </Box>
                                 )}
-                            </Card>
+                            </Box>
                         </Box>
 
                         {/* Product Info */}
                         <Box>
-                            <Stack spacing={3}>
-                                <Typography variant="h3" component="h1" sx={{ fontWeight: 'bold' }}>
+                            <Stack spacing={4}>
+                                <Typography 
+                                    variant="h3" 
+                                    component="h1" 
+                                    sx={{ 
+                                        fontWeight: 800, 
+                                        color: '#1F2937',
+                                        fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }
+                                    }}
+                                >
                                     {product.name}
                                 </Typography>
 
-                                <Stack direction="row" spacing={3}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <QrCode color="action" />
-                                        <Typography variant="body1" sx={{ fontFamily: 'monospace' }}>
+                                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                        <Box
+                                            sx={{
+                                                width: 32,
+                                                height: 32,
+                                                backgroundColor: '#F0FDF4',
+                                                borderRadius: '8px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center'
+                                            }}
+                                        >
+                                            <QrCode sx={{ fontSize: 18, color: '#10B981' }} />
+                                        </Box>
+                                        <Typography 
+                                            variant="body1" 
+                                            sx={{ 
+                                                fontFamily: 'monospace', 
+                                                fontWeight: 600,
+                                                color: '#374151'
+                                            }}
+                                        >
                                             {product.upc_code}
                                         </Typography>
                                     </Box>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <CalendarToday color="action" />
-                                        <Typography variant="body2" color="text.secondary">
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                        <Box
+                                            sx={{
+                                                width: 32,
+                                                height: 32,
+                                                backgroundColor: '#F0FDF4',
+                                                borderRadius: '8px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center'
+                                            }}
+                                        >
+                                            <CalendarToday sx={{ fontSize: 18, color: '#10B981' }} />
+                                        </Box>
+                                        <Typography variant="body2" sx={{ color: '#6B7280', fontWeight: 500 }}>
                                             Added {formatDate(product.created_at)}
                                         </Typography>
                                     </Box>
@@ -256,19 +397,49 @@ const ProductDetail: React.FC = () => {
 
                                 <Box sx={{
                                     display: 'grid',
-                                    gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
-                                    gap: 2
+                                    gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(2, 1fr)' },
+                                    gap: 3
                                 }}>
-                                    <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
-                                        <Typography variant="h4" color="primary">
+                                    <Box 
+                                        sx={{ 
+                                            backgroundColor: 'white',
+                                            border: '1px solid #F3F4F6',
+                                            borderRadius: '12px',
+                                            p: 3, 
+                                            textAlign: 'center' 
+                                        }}
+                                    >
+                                        <Typography 
+                                            variant="h4" 
+                                            sx={{ 
+                                                color: '#10B981', 
+                                                fontWeight: 800,
+                                                mb: 1
+                                            }}
+                                        >
                                             {product.ingredients?.length || 0}
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
+                                        <Typography variant="body2" sx={{ color: '#6B7280', fontWeight: 500 }}>
                                             Ingredients
                                         </Typography>
-                                    </Paper>
-                                    <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
-                                        <Typography variant="h4" color="error">
+                                    </Box>
+                                    <Box 
+                                        sx={{ 
+                                            backgroundColor: 'white',
+                                            border: '1px solid #F3F4F6',
+                                            borderRadius: '12px',
+                                            p: 3, 
+                                            textAlign: 'center' 
+                                        }}
+                                    >
+                                        <Typography 
+                                            variant="h4" 
+                                            sx={{ 
+                                                color: '#EF4444', 
+                                                fontWeight: 800,
+                                                mb: 1
+                                            }}
+                                        >
                                             {(() => {
                                                 if (!product.ingredients) return 0;
                                                 const allAllergens = product.ingredients.flatMap(ingredient => 
@@ -280,49 +451,146 @@ const ProductDetail: React.FC = () => {
                                                 return uniqueAllergens.length;
                                             })()}
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
+                                        <Typography variant="body2" sx={{ color: '#6B7280', fontWeight: 500 }}>
                                             Allergens
                                         </Typography>
-                                    </Paper>
+                                    </Box>
                                 </Box>
 
                                 {!isAuthenticated && (
-                                    <Alert severity="info" icon={<Info />}>
-                                        <Typography variant="body2">
-                                            <Link to="/login" style={{ textDecoration: 'none' }}>
-                                                <Button variant="text" size="small">Sign in</Button>
-                                            </Link>
-                                            {' '}to get personalized safety checks based on your allergies.
-                                        </Typography>
-                                    </Alert>
+                                    <Box
+                                        sx={{
+                                            backgroundColor: '#F0F9FF',
+                                            border: '1px solid #0EA5E9',
+                                            borderRadius: '12px',
+                                            p: 3,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 2
+                                        }}
+                                    >
+                                        <Box
+                                            sx={{
+                                                width: 32,
+                                                height: 32,
+                                                backgroundColor: '#0EA5E9',
+                                                borderRadius: '8px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                flexShrink: 0
+                                            }}
+                                        >
+                                            <Info sx={{ color: 'white', fontSize: 18 }} />
+                                        </Box>
+                                        <Box>
+                                            <Typography variant="body2" sx={{ color: '#1F2937', lineHeight: 1.5 }}>
+                                                <Button
+                                                    component={Link}
+                                                    to="/login"
+                                                    sx={{
+                                                        color: '#0EA5E9',
+                                                        fontWeight: 600,
+                                                        textTransform: 'none',
+                                                        p: 0,
+                                                        minWidth: 'auto',
+                                                        '&:hover': {
+                                                            backgroundColor: 'transparent',
+                                                            textDecoration: 'underline'
+                                                        }
+                                                    }}
+                                                >
+                                                    Sign in
+                                                </Button>
+                                                {' '}to get personalized safety checks based on your allergies.
+                                            </Typography>
+                                        </Box>
+                                    </Box>
                                 )}
                             </Stack>
                         </Box>
                     </Box>
-                </Paper>
+                </Box>
 
                 {/* Ingredients Section */}
-                <Paper sx={{ p: 3 }}>
-                    <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+                <Box
+                    sx={{
+                        backgroundColor: 'white',
+                        border: '1px solid #F3F4F6',
+                        borderRadius: '16px',
+                        p: 4
+                    }}
+                >
+                    <Typography 
+                        variant="h5" 
+                        sx={{ 
+                            fontWeight: 700, 
+                            mb: 3, 
+                            color: '#1F2937',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                width: 32,
+                                height: 32,
+                                backgroundColor: '#F0FDF4',
+                                borderRadius: '8px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <Package sx={{ fontSize: 18, color: '#10B981' }} />
+                        </Box>
                         Ingredients ({product.ingredients?.length || 0})
                     </Typography>
                     {product.ingredients && product.ingredients.length > 0 ? (
-                        <List>
+                        <Box sx={{ 
+                            display: 'grid', 
+                            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+                            gap: 2 
+                        }}>
                             {product.ingredients.map((ingredient, index) => (
-                                <ListItem key={index} divider={index < product.ingredients.length - 1}>
-                                    <ListItemText primary={ingredient.title || ingredient.name} />
-                                </ListItem>
+                                <Box
+                                    key={index}
+                                    sx={{
+                                        backgroundColor: '#FAFAFA',
+                                        border: '1px solid #F3F4F6',
+                                        borderRadius: '8px',
+                                        p: 2
+                                    }}
+                                >
+                                                                         <Typography 
+                                         variant="body2" 
+                                         sx={{ 
+                                             color: '#374151',
+                                             fontWeight: 500
+                                         }}
+                                     >
+                                         {ingredient.title}
+                                     </Typography>
+                                </Box>
                             ))}
-                        </List>
+                        </Box>
                     ) : (
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" sx={{ color: '#9CA3AF', fontStyle: 'italic' }}>
                             Ingredient information is being processed...
                         </Typography>
                     )}
-                </Paper>
+                </Box>
 
                 {/* Allergens Section */}
-                <Paper sx={{ p: 3 }}>
+                <Box
+                    sx={{
+                        backgroundColor: 'white',
+                        border: '1px solid #F3F4F6',
+                        borderRadius: '16px',
+                        p: 4
+                    }}
+                >
                     {(() => {
                         // Extract all allergens from ingredients
                         const allAllergens = product.ingredients?.flatMap(ingredient => 
@@ -336,38 +604,105 @@ const ProductDetail: React.FC = () => {
                         
                         return (
                             <>
-                                <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+                                <Typography 
+                                    variant="h5" 
+                                    sx={{ 
+                                        fontWeight: 700, 
+                                        mb: 3, 
+                                        color: '#1F2937',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 2
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            width: 32,
+                                            height: 32,
+                                            backgroundColor: '#FEF2F2',
+                                            borderRadius: '8px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                    >
+                                        <Warning sx={{ fontSize: 18, color: '#EF4444' }} />
+                                    </Box>
                                     Detected Allergens ({uniqueAllergens.length})
                                 </Typography>
                                 {uniqueAllergens.length > 0 ? (
-                                    <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
+                                    <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 2 }}>
                                         {uniqueAllergens.map((allergen, index) => (
                                             <Chip
                                                 key={allergen.id || index}
                                                 label={allergen.name}
-                                                color="error"
-                                                variant="outlined"
+                                                sx={{
+                                                    backgroundColor: '#FEE2E2',
+                                                    color: '#DC2626',
+                                                    border: '1px solid #FECACA',
+                                                    fontWeight: 600,
+                                                    '& .MuiChip-icon': {
+                                                        color: '#DC2626'
+                                                    }
+                                                }}
                                                 icon={<Warning />}
                                             />
                                         ))}
                                     </Stack>
                                 ) : (
-                                    <Typography variant="body2" color="text.secondary">
-                                        No allergens detected in this product.
-                                    </Typography>
+                                    <Box
+                                        sx={{
+                                            backgroundColor: '#F0FDF4',
+                                            border: '1px solid #BBF7D0',
+                                            borderRadius: '12px',
+                                            p: 3,
+                                            textAlign: 'center'
+                                        }}
+                                    >
+                                        <CheckCircle sx={{ fontSize: 32, color: '#10B981', mb: 1 }} />
+                                        <Typography variant="body2" sx={{ color: '#059669', fontWeight: 500 }}>
+                                            No allergens detected in this product.
+                                        </Typography>
+                                    </Box>
                                 )}
                             </>
                         );
                     })()}
-                </Paper>
+                </Box>
 
                 {/* AI Processing Note */}
-                <Alert severity="info" icon={<Info />}>
-                    <Typography variant="body2">
-                        <strong>AI Processing:</strong> Allergen information is automatically extracted from ingredient photos using AI.
-                        Always verify with the actual product label and consult healthcare professionals for severe allergies.
-                    </Typography>
-                </Alert>
+                <Box
+                    sx={{
+                        backgroundColor: '#FEF3C7',
+                        border: '1px solid #F59E0B',
+                        borderRadius: '16px',
+                        p: 4,
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: 2
+                    }}
+                >
+                    <Box
+                        sx={{
+                            width: 32,
+                            height: 32,
+                            backgroundColor: '#F59E0B',
+                            borderRadius: '8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                        }}
+                    >
+                        <Info sx={{ color: 'white', fontSize: 18 }} />
+                    </Box>
+                    <Box>
+                        <Typography variant="body2" sx={{ color: '#1F2937', lineHeight: 1.6 }}>
+                            <strong>AI Processing:</strong> Allergen information is automatically extracted from ingredient photos using AI.
+                            Always verify with the actual product label and consult healthcare professionals for severe allergies.
+                        </Typography>
+                    </Box>
+                </Box>
             </Stack>
         </Container>
     );
