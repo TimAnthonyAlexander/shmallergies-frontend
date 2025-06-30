@@ -46,8 +46,21 @@ const Signup: React.FC = () => {
     }
 
     try {
-      await signup(name, email, password, passwordConfirmation);
-      navigate('/', { replace: true });
+      const result = await signup(name, email, password, passwordConfirmation);
+      
+      if (result.requiresVerification) {
+        // Redirect to email verification page with user info
+        navigate('/verify-email', { 
+          state: { 
+            email: result.user.email,
+            fromSignup: true 
+          },
+          replace: true 
+        });
+      } else {
+        // Fallback: redirect to home (shouldn't happen with current flow)
+        navigate('/', { replace: true });
+      }
     } catch (err: any) {
       setError({
         message: err.message || 'Failed to create account',

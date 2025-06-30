@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isEmailVerified, isLoading, user } = useAuth();
   const location = useLocation();
 
   if (isLoading) {
@@ -30,6 +30,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   if (!isAuthenticated) {
     // Redirect them to the /login page, but save the attempted location
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (!isEmailVerified && user) {
+    // Redirect to email verification page if email is not verified
+    return <Navigate to="/verify-email" state={{ email: user.email, fromSignup: false }} replace />;
   }
 
   return <>{children}</>;

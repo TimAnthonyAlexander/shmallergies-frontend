@@ -84,6 +84,13 @@ export class ApiClient {
     });
   }
 
+  async resendVerificationEmail(data: { email: string }) {
+    return this.request<{ message: string }>('/auth/email/resend', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
   // User endpoints
   async getProfile() {
     return this.request<{ message: string; user: any }>('/user');

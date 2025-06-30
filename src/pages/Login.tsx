@@ -42,6 +42,18 @@ const Login: React.FC = () => {
       await login(email, password);
       navigate(from, { replace: true });
     } catch (err: any) {
+      // Check if error is due to email not being verified
+      if (err.message === 'Your email address is not verified.') {
+        navigate('/verify-email', { 
+          state: { 
+            email: email,
+            fromSignup: false 
+          },
+          replace: true 
+        });
+        return;
+      }
+      
       setError({
         message: err.message || 'Failed to login',
         errors: err.errors

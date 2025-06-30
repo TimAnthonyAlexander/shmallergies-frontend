@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import EmailVerification from './pages/EmailVerification';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import UploadProduct from './pages/UploadProduct';
@@ -80,6 +81,7 @@ const App: React.FC = () => {
             {/* Auth routes without layout (full screen) */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/verify-email" element={<EmailVerification />} />
             
             {/* Protected routes with layout */}
             <Route 
