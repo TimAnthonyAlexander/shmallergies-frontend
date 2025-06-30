@@ -136,259 +136,674 @@ const Profile: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4, display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ 
+        minHeight: '100vh',
+        backgroundColor: '#fafafa',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
         <LoadingSpinner size="large" />
-      </Container>
+      </Box>
     );
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Stack spacing={4}>
-        {/* Header */}
-        <Box sx={{ textAlign: 'center' }}>
-          <Avatar 
-            sx={{ 
-              width: 48, 
-              height: 48, 
-              mx: 'auto', 
-              mb: 2,
-              backgroundColor: 'primary.main'
-            }}
-          >
-            <Person />
-          </Avatar>
-          <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-            Your Profile
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Manage your personal allergy information for personalized safety checks.
-          </Typography>
-        </Box>
-
-        {/* Success Message */}
-        {success && (
-          <Alert 
-            severity="success" 
-            icon={<CheckCircle />}
-            onClose={() => setSuccess('')}
-          >
-            {success}
-          </Alert>
-        )}
-
-        {/* Error Message */}
-        {error && (
-          <ErrorMessage message={error} onDismiss={() => setError('')} />
-        )}
-
-        {/* User Info */}
-        <Paper sx={{ p: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            Account Information
-          </Typography>
+    <Box sx={{ 
+      minHeight: '100vh',
+      backgroundColor: '#fafafa',
+      py: { xs: 4, md: 8 }
+    }}>
+      <Container maxWidth="md" sx={{ px: { xs: 3, md: 6 } }}>
+        <Stack spacing={{ xs: 6, md: 10 }}>
+          {/* Header */}
           <Box sx={{ 
-            display: 'grid', 
-            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, 
-            gap: 3 
+            textAlign: 'center',
+            maxWidth: 800,
+            mx: 'auto'
           }}>
-            <Box>
-              <Typography variant="subtitle2" color="text.secondary">
-                Name
-              </Typography>
-              <Typography variant="body1">
-                {user?.name}
-              </Typography>
+            <Box sx={{
+              width: 80,
+              height: 80,
+              borderRadius: '50%',
+              backgroundColor: '#1a1a1a',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mx: 'auto',
+              mb: 4
+            }}>
+              <Person sx={{ fontSize: 32, color: '#ffffff' }} />
             </Box>
-            <Box>
-              <Typography variant="subtitle2" color="text.secondary">
-                Email
-              </Typography>
-              <Typography variant="body1">
-                {user?.email}
-              </Typography>
-            </Box>
-          </Box>
-        </Paper>
-
-        {/* Allergies Section */}
-        <Paper sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-              Your Allergies
+            <Typography 
+              variant="h1"
+              sx={{ 
+                fontSize: { xs: '2.5rem', md: '3.5rem' },
+                fontWeight: 300,
+                letterSpacing: '-0.04em',
+                color: '#1a1a1a',
+                mb: 3,
+                lineHeight: 1.1
+              }}
+            >
+              Profile
             </Typography>
-            {!isAddingAllergy && (
-              <Button
-                onClick={() => setIsAddingAllergy(true)}
-                variant="contained"
-                startIcon={<Add />}
-                size="small"
-              >
-                Add Allergy
-              </Button>
-            )}
+            <Typography 
+              variant="h5"
+              sx={{ 
+                fontSize: { xs: '1.1rem', md: '1.3rem' },
+                fontWeight: 400,
+                color: '#666666',
+                lineHeight: 1.5
+              }}
+            >
+              Manage your personal information and allergy preferences
+            </Typography>
           </Box>
 
-          {/* Add New Allergy Form */}
-          {isAddingAllergy && (
-            <Card sx={{ mb: 3, backgroundColor: 'grey.50' }}>
-              <CardContent>
-                <Box component="form" onSubmit={handleAddAllergy}>
-                  <Stack spacing={2}>
-                    <TextField
-                      label="Allergy Description"
-                      placeholder="e.g., Peanuts and tree nuts, Severe dairy allergy, Shellfish..."
-                      value={newAllergyText}
-                      onChange={(e) => setNewAllergyText(e.target.value)}
-                      fullWidth
-                      autoFocus
-                      multiline
-                      rows={2}
-                    />
-                    <Stack direction="row" spacing={1}>
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        startIcon={<Save />}
-                        disabled={!newAllergyText.trim()}
-                        size="small"
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setIsAddingAllergy(false);
-                          setNewAllergyText('');
-                        }}
-                        variant="outlined"
-                        startIcon={<Close />}
-                        size="small"
-                      >
-                        Cancel
-                      </Button>
-                    </Stack>
-                  </Stack>
-                </Box>
-              </CardContent>
-            </Card>
+          {/* Success Message */}
+          {success && (
+            <Box sx={{ maxWidth: 800, mx: 'auto', width: '100%' }}>
+              <Alert 
+                severity="success" 
+                icon={<CheckCircle />}
+                onClose={() => setSuccess('')}
+                sx={{
+                  backgroundColor: '#f8f9fa',
+                  border: '1px solid #e0e0e0',
+                  borderRadius: '12px',
+                  color: '#1a1a1a',
+                  '& .MuiAlert-icon': {
+                    color: '#4caf50'
+                  },
+                  '& .MuiAlert-message': {
+                    fontSize: '0.95rem',
+                    fontWeight: 400
+                  }
+                }}
+              >
+                {success}
+              </Alert>
+            </Box>
           )}
 
-          {/* Allergies List */}
-          {allergies.length === 0 ? (
-            <Box sx={{ textAlign: 'center', py: 6 }}>
-              <Warning sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-              <Typography variant="h6" color="text.secondary" gutterBottom>
-                No allergies recorded
+          {/* Error Message */}
+          {error && (
+            <Box sx={{ maxWidth: 800, mx: 'auto', width: '100%' }}>
+              <ErrorMessage message={error} onDismiss={() => setError('')} />
+            </Box>
+          )}
+
+          {/* Account Information */}
+          <Box sx={{ 
+            maxWidth: 800,
+            mx: 'auto',
+            width: '100%'
+          }}>
+            <Box sx={{
+              backgroundColor: '#ffffff',
+              borderRadius: '16px',
+              border: '1px solid #e8e8e8',
+              p: { xs: 4, md: 6 }
+            }}>
+              <Typography 
+                variant="h4"
+                sx={{ 
+                  fontSize: '1.5rem',
+                  fontWeight: 400,
+                  color: '#1a1a1a',
+                  mb: 4,
+                  letterSpacing: '-0.02em'
+                }}
+              >
+                Account
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                Add your allergies to get personalized safety checks when viewing products.
-              </Typography>
-              {!isAddingAllergy && (
-                <Button
-                  onClick={() => setIsAddingAllergy(true)}
-                  variant="contained"
-                  startIcon={<Add />}
+              
+              <Box sx={{ 
+                display: 'grid',
+                gap: 4
+              }}>
+                <Box>
+                  <Typography 
+                    variant="overline" 
+                    sx={{ 
+                      color: '#999999',
+                      fontSize: '0.75rem',
+                      fontWeight: 500,
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                      mb: 1,
+                      display: 'block'
+                    }}
+                  >
+                    Full Name
+                  </Typography>
+                  <Typography 
+                    variant="h6" 
+                    sx={{ 
+                      color: '#1a1a1a',
+                      fontWeight: 400,
+                      fontSize: '1.1rem'
+                    }}
+                  >
+                    {user?.name}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography 
+                    variant="overline" 
+                    sx={{ 
+                      color: '#999999',
+                      fontSize: '0.75rem',
+                      fontWeight: 500,
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                      mb: 1,
+                      display: 'block'
+                    }}
+                  >
+                    Email Address
+                  </Typography>
+                  <Typography 
+                    variant="h6" 
+                    sx={{ 
+                      color: '#1a1a1a',
+                      fontWeight: 400,
+                      fontSize: '1.1rem'
+                    }}
+                  >
+                    {user?.email}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+
+          {/* Allergies Section */}
+          <Box sx={{ 
+            maxWidth: 800,
+            mx: 'auto',
+            width: '100%'
+          }}>
+            <Box sx={{
+              backgroundColor: '#ffffff',
+              borderRadius: '16px',
+              border: '1px solid #e8e8e8',
+              p: { xs: 4, md: 6 }
+            }}>
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between', 
+                mb: 5
+              }}>
+                <Typography 
+                  variant="h4"
+                  sx={{ 
+                    fontSize: '1.5rem',
+                    fontWeight: 400,
+                    color: '#1a1a1a',
+                    letterSpacing: '-0.02em'
+                  }}
                 >
-                  Add Your First Allergy
-                </Button>
+                  Allergies
+                </Typography>
+                {!isAddingAllergy && (
+                  <Button
+                    onClick={() => setIsAddingAllergy(true)}
+                    startIcon={<Add sx={{ fontSize: 18 }} />}
+                    sx={{
+                      color: '#666666',
+                      fontSize: '0.9rem',
+                      fontWeight: 500,
+                      textTransform: 'none',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                        transition: 'background-color 0.2s ease'
+                      }
+                    }}
+                  >
+                    Add Allergy
+                  </Button>
+                )}
+              </Box>
+
+              {/* Add New Allergy Form */}
+              {isAddingAllergy && (
+                <Box sx={{ 
+                  mb: 5,
+                  p: 4,
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '12px',
+                  border: '1px solid #e8e8e8'
+                }}>
+                  <Box component="form" onSubmit={handleAddAllergy}>
+                    <Stack spacing={3}>
+                      <TextField
+                        label="Describe your allergy"
+                        placeholder="e.g., Severe peanut allergy, Lactose intolerant, Shellfish sensitivity..."
+                        value={newAllergyText}
+                        onChange={(e) => setNewAllergyText(e.target.value)}
+                        fullWidth
+                        autoFocus
+                        multiline
+                        rows={3}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            backgroundColor: '#ffffff',
+                            border: '1px solid #e0e0e0',
+                            borderRadius: '12px',
+                            fontSize: '1rem',
+                            fontWeight: 400,
+                            '& fieldset': {
+                              border: 'none'
+                            },
+                            '&:hover': {
+                              borderColor: '#d0d0d0',
+                              transition: 'border-color 0.2s ease'
+                            },
+                            '&.Mui-focused': {
+                              borderColor: '#333333',
+                              boxShadow: '0 0 0 3px rgba(51, 51, 51, 0.05)'
+                            }
+                          },
+                          '& .MuiInputLabel-root': {
+                            color: '#666666',
+                            fontSize: '0.95rem',
+                            fontWeight: 500
+                          }
+                        }}
+                      />
+                      <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Button
+                          type="submit"
+                          disabled={!newAllergyText.trim()}
+                          sx={{
+                            backgroundColor: '#1a1a1a',
+                            color: '#ffffff',
+                            borderRadius: '12px',
+                            px: 4,
+                            py: 1.5,
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                            textTransform: 'none',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              backgroundColor: '#333333',
+                              boxShadow: 'none',
+                              transition: 'background-color 0.2s ease'
+                            },
+                            '&:disabled': {
+                              backgroundColor: '#e0e0e0',
+                              color: '#999999'
+                            }
+                          }}
+                        >
+                          Save Allergy
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setIsAddingAllergy(false);
+                            setNewAllergyText('');
+                          }}
+                          sx={{
+                            color: '#666666',
+                            borderRadius: '12px',
+                            px: 3,
+                            py: 1.5,
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                            textTransform: 'none',
+                            '&:hover': {
+                              backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                              transition: 'background-color 0.2s ease'
+                            }
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </Box>
+                    </Stack>
+                  </Box>
+                </Box>
+              )}
+
+              {/* Allergies List */}
+              {allergies.length === 0 ? (
+                <Box sx={{ 
+                  textAlign: 'center', 
+                  py: { xs: 6, md: 8 }
+                }}>
+                  <Box sx={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: '50%',
+                    backgroundColor: '#f5f5f5',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mx: 'auto',
+                    mb: 4
+                  }}>
+                    <Warning sx={{ fontSize: 28, color: '#cccccc' }} />
+                  </Box>
+                  <Typography 
+                    variant="h5" 
+                    sx={{ 
+                      fontSize: '1.4rem',
+                      fontWeight: 400,
+                      color: '#1a1a1a',
+                      mb: 2,
+                      lineHeight: 1.3
+                    }}
+                  >
+                    No allergies recorded
+                  </Typography>
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      color: '#666666',
+                      mb: 5,
+                      lineHeight: 1.6,
+                      fontSize: '1rem'
+                    }}
+                  >
+                    Add your allergies for personalized safety alerts
+                  </Typography>
+                  {!isAddingAllergy && (
+                    <Button
+                      onClick={() => setIsAddingAllergy(true)}
+                      sx={{
+                        backgroundColor: '#1a1a1a',
+                        color: '#ffffff',
+                        borderRadius: '12px',
+                        px: 6,
+                        py: 1.5,
+                        fontSize: '1rem',
+                        fontWeight: 500,
+                        textTransform: 'none',
+                        boxShadow: 'none',
+                        '&:hover': {
+                          backgroundColor: '#333333',
+                          boxShadow: 'none',
+                          transition: 'background-color 0.2s ease'
+                        }
+                      }}
+                    >
+                      Add First Allergy
+                    </Button>
+                  )}
+                </Box>
+              ) : (
+                <Stack spacing={3}>
+                  {allergies.map((allergy) => (
+                    <Box 
+                      key={allergy.id}
+                      sx={{
+                        p: 4,
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: '12px',
+                        border: '1px solid #e8e8e8',
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: '#f5f5f5',
+                          borderColor: '#d0d0d0'
+                        }
+                      }}
+                    >
+                      {editingId === allergy.id ? (
+                        <Stack spacing={3}>
+                          <TextField
+                            value={editAllergyText}
+                            onChange={(e) => setEditAllergyText(e.target.value)}
+                            fullWidth
+                            multiline
+                            rows={3}
+                            sx={{
+                              '& .MuiOutlinedInput-root': {
+                                backgroundColor: '#ffffff',
+                                border: '1px solid #e0e0e0',
+                                borderRadius: '12px',
+                                fontSize: '1rem',
+                                fontWeight: 400,
+                                '& fieldset': {
+                                  border: 'none'
+                                },
+                                '&:hover': {
+                                  borderColor: '#d0d0d0',
+                                  transition: 'border-color 0.2s ease'
+                                },
+                                '&.Mui-focused': {
+                                  borderColor: '#333333',
+                                  boxShadow: '0 0 0 3px rgba(51, 51, 51, 0.05)'
+                                }
+                              }
+                            }}
+                          />
+                          <Box sx={{ display: 'flex', gap: 2 }}>
+                            <Button
+                              onClick={() => handleUpdateAllergy(allergy.id)}
+                              disabled={!editAllergyText.trim()}
+                              sx={{
+                                backgroundColor: '#1a1a1a',
+                                color: '#ffffff',
+                                borderRadius: '8px',
+                                px: 3,
+                                py: 1,
+                                fontSize: '0.9rem',
+                                fontWeight: 500,
+                                textTransform: 'none',
+                                boxShadow: 'none',
+                                '&:hover': {
+                                  backgroundColor: '#333333',
+                                  boxShadow: 'none',
+                                  transition: 'background-color 0.2s ease'
+                                },
+                                '&:disabled': {
+                                  backgroundColor: '#e0e0e0',
+                                  color: '#999999'
+                                }
+                              }}
+                            >
+                              Save
+                            </Button>
+                            <Button
+                              onClick={cancelEditing}
+                              sx={{
+                                color: '#666666',
+                                borderRadius: '8px',
+                                px: 3,
+                                py: 1,
+                                fontSize: '0.9rem',
+                                fontWeight: 500,
+                                textTransform: 'none',
+                                '&:hover': {
+                                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                                  transition: 'background-color 0.2s ease'
+                                }
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                          </Box>
+                        </Stack>
+                      ) : (
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'flex-start', 
+                          justifyContent: 'space-between',
+                          gap: 3
+                        }}>
+                          <Box sx={{ flex: 1 }}>
+                            <Typography 
+                              variant="body1" 
+                              sx={{ 
+                                color: '#1a1a1a',
+                                fontWeight: 400,
+                                fontSize: '1rem',
+                                lineHeight: 1.6,
+                                mb: 2
+                              }}
+                            >
+                              {allergy.allergy_text}
+                            </Typography>
+                            <Typography 
+                              variant="caption" 
+                              sx={{ 
+                                color: '#999999',
+                                fontSize: '0.8rem',
+                                fontWeight: 500
+                              }}
+                            >
+                              Added {formatDate(allergy.created_at)}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: 'flex', gap: 1 }}>
+                            <IconButton
+                              onClick={() => startEditing(allergy)}
+                              sx={{
+                                width: 36,
+                                height: 36,
+                                backgroundColor: '#f0f0f0',
+                                color: '#666666',
+                                borderRadius: '8px',
+                                '&:hover': {
+                                  backgroundColor: '#e8e8e8',
+                                  transition: 'background-color 0.2s ease'
+                                }
+                              }}
+                            >
+                              <Edit sx={{ fontSize: 16 }} />
+                            </IconButton>
+                            <IconButton
+                              onClick={() => openDeleteDialog(allergy.id)}
+                              sx={{
+                                width: 36,
+                                height: 36,
+                                backgroundColor: '#fef2f2',
+                                color: '#dc2626',
+                                borderRadius: '8px',
+                                '&:hover': {
+                                  backgroundColor: '#fee2e2',
+                                  transition: 'background-color 0.2s ease'
+                                }
+                              }}
+                            >
+                              <Delete sx={{ fontSize: 16 }} />
+                            </IconButton>
+                          </Box>
+                        </Box>
+                      )}
+                    </Box>
+                  ))}
+                </Stack>
+              )}
+
+              {allergies.length > 0 && (
+                <Box sx={{ 
+                  mt: 5, 
+                  p: 4,
+                  backgroundColor: '#f0f8ff',
+                  borderRadius: '12px',
+                  border: '1px solid #e3f2fd'
+                }}>
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      color: '#1976d2',
+                      lineHeight: 1.6,
+                      fontSize: '0.9rem'
+                    }}
+                  >
+                    <strong>Important:</strong> Keep your allergy information current and detailed. 
+                    Always verify product labels and consult healthcare professionals for medical advice.
+                  </Typography>
+                </Box>
               )}
             </Box>
-          ) : (
-            <List>
-              {allergies.map((allergy) => (
-                <ListItem key={allergy.id} divider>
-                  {editingId === allergy.id ? (
-                    <Box sx={{ width: '100%' }}>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <TextField
-                          value={editAllergyText}
-                          onChange={(e) => setEditAllergyText(e.target.value)}
-                          fullWidth
-                          size="small"
-                          multiline
-                          rows={2}
-                        />
-                        <Stack direction="column" spacing={0.5}>
-                          <IconButton
-                            onClick={() => handleUpdateAllergy(allergy.id)}
-                            disabled={!editAllergyText.trim()}
-                            color="primary"
-                            size="small"
-                          >
-                            <Save />
-                          </IconButton>
-                          <IconButton
-                            onClick={cancelEditing}
-                            color="default"
-                            size="small"
-                          >
-                            <Close />
-                          </IconButton>
-                        </Stack>
-                      </Stack>
-                    </Box>
-                  ) : (
-                    <>
-                      <ListItemText
-                        primary={allergy.allergy_text}
-                        secondary={`Added ${formatDate(allergy.created_at)}`}
-                      />
-                      <ListItemSecondaryAction>
-                        <Stack direction="row" spacing={0.5}>
-                          <IconButton
-                            onClick={() => startEditing(allergy)}
-                            color="primary"
-                            size="small"
-                          >
-                            <Edit />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => openDeleteDialog(allergy.id)}
-                            color="error"
-                            size="small"
-                          >
-                            <Delete />
-                          </IconButton>
-                        </Stack>
-                      </ListItemSecondaryAction>
-                    </>
-                  )}
-                </ListItem>
-              ))}
-            </List>
-          )}
+          </Box>
 
-          {allergies.length > 0 && (
-            <Box sx={{ mt: 3, p: 2, backgroundColor: 'info.lighter', borderRadius: 1 }}>
-              <Typography variant="body2" color="info.dark">
-                <strong>Note:</strong> Keep your allergy information accurate and up-to-date. 
-                Always read product labels carefully and consult healthcare professionals for severe allergies.
+          {/* Delete Confirmation Dialog */}
+          <Dialog 
+            open={deleteDialogOpen} 
+            onClose={() => setDeleteDialogOpen(false)}
+            maxWidth="sm"
+            fullWidth
+            PaperProps={{
+              sx: {
+                borderRadius: '16px',
+                border: '1px solid #e8e8e8',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                p: 2
+              }
+            }}
+          >
+            <DialogTitle sx={{ 
+              color: '#1a1a1a',
+              fontWeight: 400,
+              fontSize: '1.25rem',
+              pb: 2
+            }}>
+              Delete Allergy
+            </DialogTitle>
+            <DialogContent sx={{ pb: 3 }}>
+              <Typography 
+                sx={{ 
+                  color: '#666666', 
+                  lineHeight: 1.6,
+                  fontSize: '1rem'
+                }}
+              >
+                Are you sure you want to remove this allergy from your profile? 
+                This action cannot be undone.
               </Typography>
-            </Box>
-          )}
-        </Paper>
-
-        {/* Delete Confirmation Dialog */}
-        <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-          <DialogTitle>Delete Allergy</DialogTitle>
-          <DialogContent>
-            <Typography>
-              Are you sure you want to delete this allergy? This action cannot be undone.
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-            <Button 
-              onClick={() => allergyToDelete && handleDeleteAllergy(allergyToDelete)} 
-              color="error"
-              variant="contained"
-            >
-              Delete
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Stack>
-    </Container>
+            </DialogContent>
+            <DialogActions sx={{ p: 3, pt: 0 }}>
+              <Button 
+                onClick={() => setDeleteDialogOpen(false)}
+                sx={{
+                  color: '#666666',
+                  borderRadius: '12px',
+                  px: 4,
+                  py: 1.5,
+                  fontSize: '0.95rem',
+                  fontWeight: 500,
+                  textTransform: 'none',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    transition: 'background-color 0.2s ease'
+                  }
+                }}
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => allergyToDelete && handleDeleteAllergy(allergyToDelete)} 
+                sx={{
+                  backgroundColor: '#dc2626',
+                  color: '#ffffff',
+                  borderRadius: '12px',
+                  px: 4,
+                  py: 1.5,
+                  fontSize: '0.95rem',
+                  fontWeight: 500,
+                  textTransform: 'none',
+                  boxShadow: 'none',
+                  ml: 2,
+                  '&:hover': {
+                    backgroundColor: '#b91c1c',
+                    boxShadow: 'none',
+                    transition: 'background-color 0.2s ease'
+                  }
+                }}
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Stack>
+      </Container>
+    </Box>
   );
 };
 

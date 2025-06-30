@@ -99,235 +99,551 @@ const Products: React.FC = () => {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-            <Stack spacing={4}>
-                {/* Header */}
-                <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-                        Products Database
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                        Search through our community-driven database of food products and their allergen information.
-                    </Typography>
-                </Box>
+        <Box sx={{ 
+            minHeight: '100vh',
+            backgroundColor: '#fafafa',
+            py: { xs: 4, md: 8 }
+        }}>
+            <Container maxWidth="xl" sx={{ px: { xs: 3, md: 6 } }}>
+                <Stack spacing={{ xs: 6, md: 10 }}>
+                    {/* Header */}
+                    <Box sx={{ 
+                        textAlign: 'center',
+                        maxWidth: 680,
+                        mx: 'auto',
+                        px: 2
+                    }}>
+                        <Typography 
+                            variant="h1"
+                            sx={{ 
+                                fontSize: { xs: '2.5rem', md: '3.5rem' },
+                                fontWeight: 300,
+                                letterSpacing: '-0.04em',
+                                color: '#1a1a1a',
+                                mb: 3,
+                                lineHeight: 1.1
+                            }}
+                        >
+                            Products
+                        </Typography>
+                        <Typography 
+                            variant="h5"
+                            sx={{ 
+                                fontSize: { xs: '1.1rem', md: '1.3rem' },
+                                fontWeight: 400,
+                                color: '#666666',
+                                lineHeight: 1.5,
+                                maxWidth: 500,
+                                mx: 'auto'
+                            }}
+                        >
+                            Discover and explore our curated database of food products with detailed allergen information
+                        </Typography>
+                    </Box>
 
-                {/* Search Form */}
-                <Paper sx={{ p: 3 }}>
-                    <Box component="form" onSubmit={handleSearch}>
-                        <Stack direction="row" spacing={2}>
-                            <TextField
-                                fullWidth
-                                placeholder="Search by product name or UPC code..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <Search />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                disabled={isLoading}
-                                sx={{ minWidth: 120 }}
-                            >
-                                {isLoading ? <LoadingSpinner size="small" /> : 'Search'}
-                            </Button>
-                            {searchMode === 'search' && (
+                    {/* Search */}
+                    <Box sx={{ 
+                        maxWidth: 720,
+                        mx: 'auto',
+                        width: '100%'
+                    }}>
+                        <Box component="form" onSubmit={handleSearch}>
+                            <Box sx={{ 
+                                display: 'flex',
+                                gap: 2,
+                                alignItems: 'stretch'
+                            }}>
+                                <TextField
+                                    fullWidth
+                                    placeholder="Search products or UPC codes"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            backgroundColor: '#ffffff',
+                                            border: '1px solid #e0e0e0',
+                                            borderRadius: '12px',
+                                            fontSize: '1rem',
+                                            fontWeight: 400,
+                                            py: 0.5,
+                                            '& fieldset': {
+                                                border: 'none'
+                                            },
+                                            '&:hover': {
+                                                borderColor: '#d0d0d0',
+                                                transition: 'border-color 0.2s ease'
+                                            },
+                                            '&.Mui-focused': {
+                                                borderColor: '#333333',
+                                                boxShadow: '0 0 0 3px rgba(51, 51, 51, 0.05)'
+                                            }
+                                        },
+                                        '& .MuiInputBase-input': {
+                                            py: 2
+                                        }
+                                    }}
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <Search sx={{ color: '#999999', fontSize: 20 }} />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
                                 <Button
-                                    onClick={clearSearch}
-                                    variant="outlined"
-                                    sx={{ minWidth: 80 }}
+                                    type="submit"
+                                    disabled={isLoading}
+                                    sx={{
+                                        backgroundColor: '#1a1a1a',
+                                        color: '#ffffff',
+                                        borderRadius: '12px',
+                                        px: 4,
+                                        py: 2,
+                                        fontSize: '0.95rem',
+                                        fontWeight: 500,
+                                        textTransform: 'none',
+                                        minWidth: 100,
+                                        boxShadow: 'none',
+                                        '&:hover': {
+                                            backgroundColor: '#333333',
+                                            boxShadow: 'none',
+                                            transition: 'background-color 0.2s ease'
+                                        },
+                                        '&:disabled': {
+                                            backgroundColor: '#e0e0e0',
+                                            color: '#999999'
+                                        }
+                                    }}
                                 >
-                                    Clear
+                                    {isLoading ? <LoadingSpinner size="small" /> : 'Search'}
                                 </Button>
+                                {searchMode === 'search' && (
+                                    <Button
+                                        onClick={clearSearch}
+                                        sx={{
+                                            color: '#666666',
+                                            borderRadius: '12px',
+                                            px: 3,
+                                            fontSize: '0.95rem',
+                                            fontWeight: 500,
+                                            textTransform: 'none',
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                                                transition: 'background-color 0.2s ease'
+                                            }
+                                        }}
+                                    >
+                                        Clear
+                                    </Button>
+                                )}
+                            </Box>
+                        </Box>
+                    </Box>
+
+                    {/* Error Display */}
+                    {error && (
+                        <Box sx={{ maxWidth: 720, mx: 'auto', width: '100%' }}>
+                            <ErrorMessage message={error} onDismiss={() => setError('')} />
+                        </Box>
+                    )}
+
+                    {/* Results Info & Actions */}
+                    <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-between',
+                        maxWidth: 1400,
+                        mx: 'auto',
+                        width: '100%',
+                        px: 1
+                    }}>
+                        <Typography 
+                            variant="body2" 
+                            sx={{ 
+                                color: '#666666',
+                                fontSize: '0.9rem',
+                                fontWeight: 400
+                            }}
+                        >
+                            {searchMode === 'search' ? (
+                                <>{products.length} results for "{searchQuery}"</>
+                            ) : (
+                                <>{products.length} of {total} products</>
                             )}
-                        </Stack>
-                    </Box>
-                </Paper>
-
-                {/* Error Display */}
-                {error && (
-                    <ErrorMessage message={error} onDismiss={() => setError('')} />
-                )}
-
-                {/* Results Info */}
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Typography variant="body2" color="text.secondary">
-                        {searchMode === 'search' ? (
-                            <>Showing {products.length} search results for "{searchQuery}"</>
-                        ) : (
-                            <>Showing {products.length} of {total} products (Page {currentPage} of {totalPages})</>
-                        )}
-                    </Typography>
-                </Box>
-
-                {/* Products Grid */}
-                {isLoading ? (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-                        <LoadingSpinner size="large" />
-                    </Box>
-                ) : products.length === 0 ? (
-                    <Box sx={{ textAlign: 'center', py: 6 }}>
-                        <Package sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-                        <Typography variant="h6" color="text.secondary" gutterBottom>
-                            {searchMode === 'search' ? 'No products found' : 'No products available'}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                            {searchMode === 'search'
-                                ? 'Try adjusting your search terms or browse all products.'
-                                : 'Be the first to add a product to our database!'
-                            }
-                        </Typography>
+                        
                         <Button
                             component={Link}
                             to="/upload"
-                            variant="contained"
-                            startIcon={<Add />}
+                            startIcon={<Add sx={{ fontSize: 18 }} />}
+                            sx={{
+                                color: '#666666',
+                                fontSize: '0.9rem',
+                                fontWeight: 500,
+                                textTransform: 'none',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                                    transition: 'background-color 0.2s ease'
+                                }
+                            }}
                         >
                             Add Product
                         </Button>
                     </Box>
-                ) : (
-                    <Box sx={{
-                        display: 'grid',
-                        gridTemplateColumns: {
-                            xs: '1fr',
-                            sm: 'repeat(2, 1fr)',
-                            lg: 'repeat(3, 1fr)'
-                        },
-                        gap: 3
-                    }}>
-                        {products.map((product) => (
-                            <Box key={product.id}>
-                                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                                    {/* Product Image */}
-                                    {product.ingredient_image_url ? (
-                                        <CardMedia
-                                            component="img"
-                                            height="200"
-                                            image={'http://shmallergies.test:2811' + product.ingredient_image_url}
-                                            alt={`${product.name} ingredients`}
-                                            sx={{ objectFit: 'cover' }}
-                                        />
-                                    ) : (
-                                        <Box
-                                            sx={{
-                                                height: 200,
+
+                    {/* Products Grid */}
+                    {isLoading ? (
+                        <Box sx={{ 
+                            display: 'flex', 
+                            justifyContent: 'center', 
+                            py: { xs: 8, md: 12 }
+                        }}>
+                            <LoadingSpinner size="large" />
+                        </Box>
+                    ) : products.length === 0 ? (
+                        <Box sx={{ 
+                            textAlign: 'center', 
+                            py: { xs: 8, md: 12 },
+                            maxWidth: 480,
+                            mx: 'auto'
+                        }}>
+                            <Box sx={{
+                                width: 64,
+                                height: 64,
+                                borderRadius: '50%',
+                                backgroundColor: '#f5f5f5',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                mx: 'auto',
+                                mb: 4
+                            }}>
+                                <Package sx={{ fontSize: 28, color: '#cccccc' }} />
+                            </Box>
+                            <Typography 
+                                variant="h5" 
+                                sx={{ 
+                                    fontSize: '1.4rem',
+                                    fontWeight: 400,
+                                    color: '#1a1a1a',
+                                    mb: 2,
+                                    lineHeight: 1.3
+                                }}
+                            >
+                                {searchMode === 'search' ? 'No matches found' : 'No products yet'}
+                            </Typography>
+                            <Typography 
+                                variant="body1" 
+                                sx={{ 
+                                    color: '#666666',
+                                    mb: 5,
+                                    lineHeight: 1.6,
+                                    fontSize: '1rem'
+                                }}
+                            >
+                                {searchMode === 'search'
+                                    ? 'Try adjusting your search or browse all products'
+                                    : 'Be the first to contribute to our product database'
+                                }
+                            </Typography>
+                            <Button
+                                component={Link}
+                                to="/upload"
+                                sx={{
+                                    backgroundColor: '#1a1a1a',
+                                    color: '#ffffff',
+                                    borderRadius: '12px',
+                                    px: 6,
+                                    py: 1.5,
+                                    fontSize: '1rem',
+                                    fontWeight: 500,
+                                    textTransform: 'none',
+                                    boxShadow: 'none',
+                                    '&:hover': {
+                                        backgroundColor: '#333333',
+                                        boxShadow: 'none',
+                                        transition: 'background-color 0.2s ease'
+                                    }
+                                }}
+                            >
+                                Add First Product
+                            </Button>
+                        </Box>
+                    ) : (
+                        <Box sx={{ 
+                            maxWidth: 1400,
+                            mx: 'auto',
+                            width: '100%'
+                        }}>
+                            <Box sx={{
+                                display: 'grid',
+                                gridTemplateColumns: {
+                                    xs: '1fr',
+                                    sm: 'repeat(2, 1fr)',
+                                    md: 'repeat(3, 1fr)',
+                                    lg: 'repeat(4, 1fr)'
+                                },
+                                gap: { xs: 3, md: 4 }
+                            }}>
+                                {products.map((product) => (
+                                    <Box 
+                                        key={product.id}
+                                        component={Link}
+                                        to={`/products/${product.id}`}
+                                        sx={{
+                                            cursor: 'pointer',
+                                            textDecoration: 'none',
+                                            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                                            '&:hover': {
+                                                transform: 'translateY(-2px)',
+                                                '& .product-card': {
+                                                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)'
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        <Box 
+                                            className="product-card"
+                                            sx={{ 
+                                                backgroundColor: '#ffffff',
+                                                borderRadius: '16px',
+                                                overflow: 'hidden',
+                                                border: '1px solid #e8e8e8',
+                                                transition: 'box-shadow 0.2s ease',
+                                                height: '100%',
                                                 display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                backgroundColor: 'grey.100'
+                                                flexDirection: 'column'
                                             }}
                                         >
-                                            <Package sx={{ fontSize: 48, color: 'grey.400' }} />
-                                        </Box>
-                                    )}
+                                            {/* Product Image */}
+                                            <Box sx={{ position: 'relative', overflow: 'hidden' }}>
+                                                {product.ingredient_image_url ? (
+                                                    <Box
+                                                        component="img"
+                                                        src={'http://shmallergies.test:2811' + product.ingredient_image_url}
+                                                        alt={`${product.name} ingredients`}
+                                                        sx={{
+                                                            width: '100%',
+                                                            height: 240,
+                                                            objectFit: 'cover',
+                                                            transition: 'transform 0.3s ease'
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <Box
+                                                        sx={{
+                                                            height: 240,
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            backgroundColor: '#f8f8f8'
+                                                        }}
+                                                    >
+                                                        <Package sx={{ fontSize: 48, color: '#d0d0d0' }} />
+                                                    </Box>
+                                                )}
+                                            </Box>
 
-                                    {/* Product Info */}
-                                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                                        <Typography variant="h6" component="h3" gutterBottom sx={{
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 2,
-                                            WebkitBoxOrient: 'vertical'
-                                        }}>
-                                            {product.name}
-                                        </Typography>
-
-                                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                            <QrCode sx={{ fontSize: 16, mr: 1, color: 'text.secondary' }} />
-                                            <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'monospace' }}>
-                                                {product.upc_code}
-                                            </Typography>
-                                        </Box>
-
-                                        <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                <Package sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
-                                                <Typography variant="body2" color="text.secondary">
-                                                    {product.ingredients_count} ingredients
+                                            {/* Product Info */}
+                                            <Box sx={{ 
+                                                p: { xs: 3, md: 4 },
+                                                flexGrow: 1,
+                                                display: 'flex',
+                                                flexDirection: 'column'
+                                            }}>
+                                                <Typography 
+                                                    variant="h6" 
+                                                    sx={{
+                                                        fontSize: '1.1rem',
+                                                        fontWeight: 500,
+                                                        color: '#1a1a1a',
+                                                        lineHeight: 1.4,
+                                                        mb: 2,
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        display: '-webkit-box',
+                                                        WebkitLineClamp: 2,
+                                                        WebkitBoxOrient: 'vertical'
+                                                    }}
+                                                >
+                                                    {product.name}
                                                 </Typography>
-                                            </Box>
-                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                <Box sx={{
-                                                    width: 8,
-                                                    height: 8,
-                                                    borderRadius: '50%',
-                                                    backgroundColor: 'error.main',
-                                                    mr: 0.5
-                                                }} />
-                                                <Typography variant="body2" color="text.secondary">
-                                                    {product.allergens_count} allergens
-                                                </Typography>
-                                            </Box>
-                                        </Stack>
 
-                                        {product.matching_allergens && product.matching_allergens.length > 0 && (
-                                            <Box sx={{ mb: 2 }}>
-                                                <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
-                                                    {product.matching_allergens.map((allergen, index) => (
-                                                        <Chip
-                                                            key={index}
-                                                            label={allergen}
-                                                            size="small"
-                                                            color="error"
-                                                            variant="outlined"
-                                                        />
-                                                    ))}
-                                                </Stack>
-                                            </Box>
-                                        )}
+                                                <Box sx={{ 
+                                                    display: 'flex', 
+                                                    alignItems: 'center', 
+                                                    mb: 3,
+                                                    py: 1,
+                                                    px: 2,
+                                                    backgroundColor: '#f8f8f8',
+                                                    borderRadius: '8px'
+                                                }}>
+                                                    <QrCode sx={{ fontSize: 14, mr: 1, color: '#999999' }} />
+                                                    <Typography 
+                                                        variant="body2" 
+                                                        sx={{ 
+                                                            fontFamily: 'SF Mono, Monaco, monospace',
+                                                            fontSize: '0.85rem',
+                                                            color: '#666666',
+                                                            fontWeight: 500
+                                                        }}
+                                                    >
+                                                        {product.upc_code}
+                                                    </Typography>
+                                                </Box>
 
-                                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                            <CalendarToday sx={{ fontSize: 12, mr: 0.5, color: 'text.secondary' }} />
-                                            <Typography variant="caption" color="text.secondary">
-                                                Added {formatDate(product.created_at)}
-                                            </Typography>
+                                                <Box sx={{ 
+                                                    display: 'flex',
+                                                    gap: 3,
+                                                    mb: 3
+                                                }}>
+                                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                        <Box sx={{
+                                                            width: 6,
+                                                            height: 6,
+                                                            borderRadius: '50%',
+                                                            backgroundColor: '#4caf50',
+                                                            mr: 1
+                                                        }} />
+                                                        <Typography 
+                                                            variant="caption" 
+                                                            sx={{ 
+                                                                color: '#666666',
+                                                                fontSize: '0.8rem',
+                                                                fontWeight: 500
+                                                            }}
+                                                        >
+                                                            {product.ingredients_count} ingredients
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                        <Box sx={{
+                                                            width: 6,
+                                                            height: 6,
+                                                            borderRadius: '50%',
+                                                            backgroundColor: '#ff5722',
+                                                            mr: 1
+                                                        }} />
+                                                        <Typography 
+                                                            variant="caption" 
+                                                            sx={{ 
+                                                                color: '#666666',
+                                                                fontSize: '0.8rem',
+                                                                fontWeight: 500
+                                                            }}
+                                                        >
+                                                            {product.allergens_count} allergens
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+
+                                                {product.matching_allergens && product.matching_allergens.length > 0 && (
+                                                    <Box sx={{ mb: 3 }}>
+                                                        <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
+                                                            {product.matching_allergens.slice(0, 3).map((allergen, index) => (
+                                                                <Chip
+                                                                    key={index}
+                                                                    label={allergen}
+                                                                    size="small"
+                                                                    sx={{
+                                                                        backgroundColor: '#fff3e0',
+                                                                        color: '#e65100',
+                                                                        fontSize: '0.75rem',
+                                                                        fontWeight: 500,
+                                                                        border: '1px solid #ffcc02',
+                                                                        height: 24
+                                                                    }}
+                                                                />
+                                                            ))}
+                                                            {product.matching_allergens.length > 3 && (
+                                                                <Chip
+                                                                    label={`+${product.matching_allergens.length - 3}`}
+                                                                    size="small"
+                                                                    sx={{
+                                                                        backgroundColor: '#f5f5f5',
+                                                                        color: '#666666',
+                                                                        fontSize: '0.75rem',
+                                                                        fontWeight: 500,
+                                                                        height: 24
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        </Stack>
+                                                    </Box>
+                                                )}
+
+                                                <Box sx={{ mt: 'auto' }}>
+                                                    <Typography 
+                                                        variant="caption" 
+                                                        sx={{ 
+                                                            color: '#999999',
+                                                            fontSize: '0.8rem'
+                                                        }}
+                                                    >
+                                                        Added {formatDate(product.created_at)}
+                                                    </Typography>
+                                                </Box>
+                                            </Box>
                                         </Box>
-
-                                        <Box sx={{ mt: 'auto' }}>
-                                            <Button
-                                                component={Link}
-                                                to={`/products/${product.id}`}
-                                                variant="outlined"
-                                                fullWidth
-                                                startIcon={<Visibility />}
-                                            >
-                                                View Details
-                                            </Button>
-                                        </Box>
-                                    </CardContent>
-                                </Card>
+                                    </Box>
+                                ))}
                             </Box>
-                        ))}
-                    </Box>
-                )}
+                        </Box>
+                    )}
 
-                {/* Pagination - only show for browsing mode */}
-                {searchMode === 'browse' && totalPages > 1 && (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                        <Paper sx={{ p: 2 }}>
-                            <Stack spacing={2} alignItems="center">
-                                <Typography variant="body2" color="text.secondary">
-                                    Showing page {currentPage} of {totalPages} ({total} total products)
-                                </Typography>
-                                <Pagination
-                                    count={totalPages}
-                                    page={currentPage}
-                                    onChange={handlePageChange}
-                                    color="primary"
-                                />
-                            </Stack>
-                        </Paper>
-                    </Box>
-                )}
-            </Stack>
-        </Container>
+                    {/* Pagination */}
+                    {searchMode === 'browse' && totalPages > 1 && (
+                        <Box sx={{ 
+                            display: 'flex', 
+                            justifyContent: 'center', 
+                            mt: { xs: 6, md: 8 }
+                        }}>
+                            <Box sx={{
+                                backgroundColor: '#ffffff',
+                                borderRadius: '16px',
+                                border: '1px solid #e8e8e8',
+                                p: 4
+                            }}>
+                                <Stack spacing={3} alignItems="center">
+                                    <Typography 
+                                        variant="body2" 
+                                        sx={{ 
+                                            color: '#666666',
+                                            fontSize: '0.9rem'
+                                        }}
+                                    >
+                                        Page {currentPage} of {totalPages} — {total} total products
+                                    </Typography>
+                                    <Pagination
+                                        count={totalPages}
+                                        page={currentPage}
+                                        onChange={handlePageChange}
+                                        sx={{
+                                            '& .MuiPaginationItem-root': {
+                                                borderRadius: '8px',
+                                                border: 'none',
+                                                color: '#666666',
+                                                fontWeight: 500,
+                                                '&.Mui-selected': {
+                                                    backgroundColor: '#1a1a1a',
+                                                    color: '#ffffff',
+                                                    '&:hover': {
+                                                        backgroundColor: '#333333'
+                                                    }
+                                                },
+                                                '&:hover': {
+                                                    backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </Stack>
+                            </Box>
+                        </Box>
+                    )}
+                </Stack>
+            </Container>
+        </Box>
     );
 };
 
