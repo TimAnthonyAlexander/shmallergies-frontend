@@ -167,19 +167,34 @@ export class ApiClient {
   }
 
   async createProduct(formData: FormData) {
-    // Remove Content-Type header to let browser set it with boundary for multipart
-    return this.request<{
-      message: string;
-      product: any;
-      ingredient_image_url: string | null;
-    }>('/products', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Accept': 'application/json',
-        ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
-      },
-    });
+    // Handle FormData separately to avoid Content-Type header conflicts
+    const url = `${this.baseUrl}/products`;
+    const headers: Record<string, string> = {
+      'Accept': 'application/json',
+    };
+
+    if (this.token) {
+      headers.Authorization = `Bearer ${this.token}`;
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({
+          message: 'An error occurred',
+        }));
+        throw errorData;
+      }
+
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
   }
 
   async ping() {
