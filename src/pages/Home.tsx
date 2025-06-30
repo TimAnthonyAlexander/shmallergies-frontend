@@ -389,6 +389,35 @@ const Home: React.FC = () => {
           </Box>
         )}
       </Stack>
+
+      {/* Subtle Footer */}
+      <Box sx={{ 
+        textAlign: 'center', 
+        pt: 8, 
+        pb: 4, 
+        borderTop: '1px solid #f5f5f5',
+        mt: 8 
+      }}>
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            color: '#999', 
+            fontSize: '0.8rem',
+            mb: 1
+          }}
+        >
+          A project by Tim Anthony Alexander & Feli Schenke
+        </Typography>
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            color: '#ccc', 
+            fontSize: '0.75rem'
+          }}
+        >
+          © 2025 Shmallergies
+        </Typography>
+      </Box>
     </Container>
   );
 };
