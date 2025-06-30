@@ -162,7 +162,7 @@ const ProductDetail: React.FC = () => {
 
     return (
         <Container maxWidth="lg" sx={{ py: 8 }}>
-            <Stack spacing={12}>
+            <Stack spacing={6}>
                 {/* Navigation */}
                 <Button
                     component={Link}
@@ -268,9 +268,9 @@ const ProductDetail: React.FC = () => {
                     </Box>
 
                     {/* Product Info */}
-                    <Box>
-                        <Stack spacing={6}>
-                            <Box>
+                                         <Box>
+                         <Stack spacing={4}>
+                             <Box>
                                 <Typography 
                                     variant="h2" 
                                     component="h1" 
