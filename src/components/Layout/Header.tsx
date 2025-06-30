@@ -70,20 +70,27 @@ const Header: React.FC = () => {
     <AppBar position="sticky" sx={{ backgroundColor: 'white', color: 'text.primary', boxShadow: 1 }}>
       <Toolbar>
         {/* Logo */}
-        <Typography
-          variant="h6"
+        <Box
           component={Link}
           to="/"
           sx={{
             flexGrow: { xs: 1, md: 0 },
             textDecoration: 'none',
             color: 'inherit',
-            fontWeight: 'bold',
-            mr: 4
+            mr: 4,
+            display: 'flex',
+            alignItems: 'center'
           }}
         >
-          Shmallergies
-        </Typography>
+          <img 
+            src="/logo.png" 
+            alt="Shmallergies" 
+            style={{ 
+              height: '40px', 
+              width: 'auto'
+            }} 
+          />
+        </Box>
 
         {/* Desktop Navigation */}
         {!isMobile && (
