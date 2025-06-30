@@ -382,7 +382,7 @@ const ProductDetail: React.FC = () => {
                         variant="h4" 
                         sx={{ 
                             fontWeight: 300, 
-                            mb: 6, 
+                            mb: 4, 
                             color: '#000',
                             letterSpacing: '-0.01em'
                         }}
@@ -436,7 +436,7 @@ const ProductDetail: React.FC = () => {
                         variant="h4" 
                         sx={{ 
                             fontWeight: 300, 
-                            mb: 6, 
+                            mb: 4, 
                             color: '#000',
                             letterSpacing: '-0.01em'
                         }}
