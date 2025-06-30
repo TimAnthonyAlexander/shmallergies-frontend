@@ -350,7 +350,10 @@ const UploadProduct: React.FC = () => {
 
                 {/* Upload Area */}
                 <Box
+                  component="label"
                   sx={{
+                    display: 'block',
+                    width: '100%',
                     border: '2px dashed #e0e0e0',
                     borderRadius: 2,
                     p: 6,
@@ -358,12 +361,12 @@ const UploadProduct: React.FC = () => {
                     backgroundColor: '#fafafa',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
+                    boxSizing: 'border-box',
                     '&:hover': {
                       borderColor: '#bdbdbd',
                       backgroundColor: '#f5f5f5',
                     }
                   }}
-                  component="label"
                 >
                   <input
                     type="file"
@@ -372,37 +375,41 @@ const UploadProduct: React.FC = () => {
                     style={{ display: 'none' }}
                     onChange={handleImageChange}
                   />
-                  <ImageIcon sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
-                  <Typography 
-                    variant="body1" 
-                    sx={{ 
-                      color: '#666',
-                      fontSize: '1rem',
-                      fontWeight: 300,
-                      mb: 1
-                    }}
-                  >
-                    Drop image here or{' '}
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <ImageIcon sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
                     <Typography 
-                      component="span" 
+                      variant="body1" 
                       sx={{ 
-                        color: '#000', 
-                        fontWeight: 400,
-                        textDecoration: 'underline'
+                        color: '#666',
+                        fontSize: '1rem',
+                        fontWeight: 300,
+                        mb: 1,
+                        textAlign: 'center'
                       }}
                     >
-                      browse
+                      Drop image here or{' '}
+                      <Typography 
+                        component="span" 
+                        sx={{ 
+                          color: '#000', 
+                          fontWeight: 400,
+                          textDecoration: 'underline'
+                        }}
+                      >
+                        browse
+                      </Typography>
                     </Typography>
-                  </Typography>
-                  <Typography 
-                    variant="body2" 
-                    sx={{ 
-                      color: '#999',
-                      fontSize: '0.85rem'
-                    }}
-                  >
-                    PNG, JPG up to 2MB
-                  </Typography>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        color: '#999',
+                        fontSize: '0.85rem',
+                        textAlign: 'center'
+                      }}
+                    >
+                      PNG, JPG up to 2MB
+                    </Typography>
+                  </Box>
                 </Box>
               </Box>
 
