@@ -2,31 +2,25 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Box, 
-  Paper, 
   TextField, 
   Button, 
   Typography, 
   Alert,
   Container,
   Stack,
-  InputAdornment,
   Card,
   CardMedia,
   IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText
+  Fade,
+  Slide
 } from '@mui/material';
 import { 
   Upload, 
-  Inventory as Package, 
   QrCode, 
   Image as ImageIcon, 
   CheckCircle,
   Close,
-  Info,
-  Circle
+  ArrowUpward
 } from '@mui/icons-material';
 import { apiClient } from '../lib/api';
 import type { ApiError } from '../lib/api';
@@ -110,153 +104,263 @@ const UploadProduct: React.FC = () => {
     setPreviewUrl('');
   };
 
+  const isFormValid = name && upcCode && ingredientImage && validateUPC(upcCode);
+
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Stack spacing={4}>
-        {/* Header */}
-        <Box sx={{ textAlign: 'center' }}>
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              mb: 2 
-            }}
-          >
-            <Box
-              sx={{
-                width: 48,
-                height: 48,
-                borderRadius: '50%',
-                backgroundColor: 'primary.main',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
+    <Box sx={{ 
+      minHeight: '100vh',
+      backgroundColor: '#fefefe'
+    }}>
+      <Container maxWidth="sm" sx={{ py: { xs: 6, md: 12 } }}>
+        <Stack spacing={8}>
+          {/* Header */}
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography 
+              variant="h1" 
+              sx={{ 
+                fontSize: { xs: '2.25rem', md: '2.75rem' },
+                fontWeight: 300,
+                letterSpacing: '-0.02em',
+                color: '#000',
+                mb: 3,
+                lineHeight: 1.1
               }}
             >
-              <Upload sx={{ color: 'white' }} />
-            </Box>
+              Add Product
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                color: '#666',
+                fontSize: '1.1rem',
+                fontWeight: 300,
+                lineHeight: 1.5,
+                maxWidth: '400px',
+                mx: 'auto'
+              }}
+            >
+              Share a product to help others discover safe options
+            </Typography>
           </Box>
-          <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-            Add New Product
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Help build our community database by uploading product information and ingredient photos.
-          </Typography>
-        </Box>
 
-        {/* Success Message */}
-        {success && (
-          <Alert 
-            severity="success" 
-            icon={<CheckCircle />}
-            onClose={() => setSuccess('')}
-          >
-            {success}
-          </Alert>
-        )}
+          {/* Success Message */}
+          <Fade in={!!success}>
+            <Box>
+              {success && (
+                <Alert 
+                  severity="success" 
+                  icon={<CheckCircle />}
+                  onClose={() => setSuccess('')}
+                  sx={{
+                    backgroundColor: '#f8fdf8',
+                    border: '1px solid #e8f5e8',
+                    borderRadius: 2,
+                    '& .MuiAlert-message': {
+                      color: '#2e7d32',
+                      fontSize: '0.95rem'
+                    }
+                  }}
+                >
+                  {success}
+                </Alert>
+              )}
+            </Box>
+          </Fade>
 
-        {/* Error Message */}
-        {error && (
-          <ErrorMessage
-            message={error.message}
-            errors={error.errors}
-            onDismiss={() => setError(null)}
-          />
-        )}
+          {/* Error Message */}
+          {error && (
+            <Fade in={!!error}>
+              <Box>
+                <ErrorMessage
+                  message={error.message}
+                  errors={error.errors}
+                  onDismiss={() => setError(null)}
+                />
+              </Box>
+            </Fade>
+          )}
 
-        {/* Upload Form */}
-        <Paper elevation={1} sx={{ p: 4 }}>
+          {/* Upload Form */}
           <Box component="form" onSubmit={handleSubmit}>
-            <Stack spacing={3}>
+            <Stack spacing={6}>
               {/* Product Name */}
-              <TextField
-                label="Product Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                fullWidth
-                placeholder="Enter product name (e.g., Coca Cola Classic)"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Package />
-                    </InputAdornment>
-                  ),
-                }}
-              />
+              <Box>
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: '#333',
+                    mb: 2,
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}
+                >
+                  Product Name
+                </Typography>
+                <TextField
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  fullWidth
+                  placeholder="Enter product name"
+                  variant="outlined"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: '#fff',
+                      borderRadius: 1,
+                      fontSize: '1.1rem',
+                      fontWeight: 300,
+                      '& fieldset': {
+                        borderColor: '#e0e0e0',
+                        borderWidth: 1
+                      },
+                      '&:hover fieldset': {
+                        borderColor: '#bdbdbd'
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#000',
+                        borderWidth: 1
+                      }
+                    },
+                    '& .MuiInputBase-input': {
+                      py: 2.5,
+                      px: 2
+                    }
+                  }}
+                />
+              </Box>
 
               {/* UPC Code */}
-              <TextField
-                label="UPC Code"
-                value={upcCode}
-                onChange={handleUPCChange}
-                required
-                fullWidth
-                placeholder="Enter 12-digit UPC code"
-                error={upcCode !== '' && !validateUPC(upcCode)}
-                helperText={
-                  upcCode && !validateUPC(upcCode) 
-                    ? 'UPC code must be exactly 12 digits'
-                    : 'The barcode number found on the product packaging'
-                }
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <QrCode />
-                    </InputAdornment>
-                  ),
-                  sx: { fontFamily: 'monospace' }
-                }}
-              />
+              <Box>
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: '#333',
+                    mb: 2,
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}
+                >
+                  UPC Code
+                </Typography>
+                <TextField
+                  value={upcCode}
+                  onChange={handleUPCChange}
+                  required
+                  fullWidth
+                  placeholder="12-digit barcode"
+                  variant="outlined"
+                  error={upcCode !== '' && !validateUPC(upcCode)}
+                  helperText={
+                    upcCode && !validateUPC(upcCode) 
+                      ? 'Must be exactly 12 digits'
+                      : ''
+                  }
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: '#fff',
+                      borderRadius: 1,
+                      fontSize: '1.1rem',
+                      fontWeight: 300,
+                      fontFamily: 'monospace',
+                      '& fieldset': {
+                        borderColor: upcCode && !validateUPC(upcCode) ? '#d32f2f' : '#e0e0e0',
+                        borderWidth: 1
+                      },
+                      '&:hover fieldset': {
+                        borderColor: upcCode && !validateUPC(upcCode) ? '#d32f2f' : '#bdbdbd'
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: upcCode && !validateUPC(upcCode) ? '#d32f2f' : '#000',
+                        borderWidth: 1
+                      }
+                    },
+                    '& .MuiInputBase-input': {
+                      py: 2.5,
+                      px: 2
+                    },
+                    '& .MuiFormHelperText-root': {
+                      fontSize: '0.8rem',
+                      mt: 1,
+                      ml: 0
+                    }
+                  }}
+                />
+              </Box>
 
               {/* Ingredient Image Upload */}
               <Box>
-                <Typography variant="subtitle1" gutterBottom>
-                  Ingredient List Photo *
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: '#333',
+                    mb: 3,
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}
+                >
+                  Ingredient List Photo
                 </Typography>
                 
                 {/* Image Preview */}
                 {previewUrl && (
-                  <Card sx={{ mb: 2, maxWidth: 400, position: 'relative' }}>
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={previewUrl}
-                      alt="Ingredient preview"
-                      sx={{ objectFit: 'cover' }}
-                    />
-                    <IconButton
-                      onClick={removeImage}
-                      sx={{
-                        position: 'absolute',
-                        top: 8,
-                        right: 8,
-                        backgroundColor: 'error.main',
-                        color: 'white',
-                        '&:hover': {
-                          backgroundColor: 'error.dark',
-                        }
+                  <Slide direction="up" in={!!previewUrl}>
+                    <Card 
+                      sx={{ 
+                        mb: 4, 
+                        position: 'relative',
+                        borderRadius: 2,
+                        overflow: 'hidden',
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
                       }}
-                      size="small"
                     >
-                      <Close />
-                    </IconButton>
-                  </Card>
+                      <CardMedia
+                        component="img"
+                        height="280"
+                        image={previewUrl}
+                        alt="Ingredient preview"
+                        sx={{ objectFit: 'cover' }}
+                      />
+                      <IconButton
+                        onClick={removeImage}
+                        sx={{
+                          position: 'absolute',
+                          top: 12,
+                          right: 12,
+                          backgroundColor: 'rgba(0,0,0,0.7)',
+                          color: 'white',
+                          width: 32,
+                          height: 32,
+                          '&:hover': {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                          }
+                        }}
+                        size="small"
+                      >
+                        <Close sx={{ fontSize: 18 }} />
+                      </IconButton>
+                    </Card>
+                  </Slide>
                 )}
 
                 {/* Upload Area */}
-                <Paper
-                  variant="outlined"
+                <Box
                   sx={{
-                    p: 4,
+                    border: '2px dashed #e0e0e0',
+                    borderRadius: 2,
+                    p: 6,
                     textAlign: 'center',
-                    border: '2px dashed',
-                    borderColor: 'grey.300',
-                    backgroundColor: 'grey.50',
+                    backgroundColor: '#fafafa',
                     cursor: 'pointer',
+                    transition: 'all 0.2s ease',
                     '&:hover': {
-                      borderColor: 'grey.400',
-                      backgroundColor: 'grey.100',
+                      borderColor: '#bdbdbd',
+                      backgroundColor: '#f5f5f5',
                     }
                   }}
                   component="label"
@@ -268,96 +372,131 @@ const UploadProduct: React.FC = () => {
                     style={{ display: 'none' }}
                     onChange={handleImageChange}
                   />
-                  <ImageIcon sx={{ fontSize: 48, color: 'grey.400', mb: 1 }} />
-                  <Typography variant="body1" gutterBottom>
-                    <Typography component="span" sx={{ color: 'primary.main', fontWeight: 'medium' }}>
-                      Upload a file
+                  <ImageIcon sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      color: '#666',
+                      fontSize: '1rem',
+                      fontWeight: 300,
+                      mb: 1
+                    }}
+                  >
+                    Drop image here or{' '}
+                    <Typography 
+                      component="span" 
+                      sx={{ 
+                        color: '#000', 
+                        fontWeight: 400,
+                        textDecoration: 'underline'
+                      }}
+                    >
+                      browse
                     </Typography>
-                    {' or drag and drop'}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    PNG, JPG, GIF up to 2MB
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      color: '#999',
+                      fontSize: '0.85rem'
+                    }}
+                  >
+                    PNG, JPG up to 2MB
                   </Typography>
-                </Paper>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  Take a clear photo of the ingredient list on the product packaging. Our AI will automatically detect allergens.
+                </Box>
+              </Box>
+
+              {/* AI Processing Note */}
+              <Box 
+                sx={{ 
+                  py: 3,
+                  px: 4,
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: 2,
+                  borderLeft: '4px solid #e9ecef'
+                }}
+              >
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: '#495057',
+                    fontSize: '0.9rem',
+                    lineHeight: 1.6,
+                    fontWeight: 300
+                  }}
+                >
+                  AI will automatically extract allergen information from your ingredient photo. 
+                  Results appear within minutes of upload.
                 </Typography>
               </Box>
 
-              {/* AI Processing Info */}
-              <Alert severity="info" icon={<Info />}>
-                <Typography variant="subtitle2" gutterBottom>
-                  AI-Powered Allergen Detection
-                </Typography>
-                <Typography variant="body2">
-                  After uploading, our AI will automatically process the ingredient image to identify potential allergens. 
-                  This helps create accurate allergen profiles for the community.
-                </Typography>
-              </Alert>
-
               {/* Submit Button */}
-              <Box sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}>
+              <Box sx={{ pt: 2 }}>
                 <Button
                   type="submit"
                   variant="contained"
                   size="large"
-                  disabled={isLoading || !name || !upcCode || !ingredientImage || !validateUPC(upcCode)}
-                                     startIcon={isLoading ? <LoadingSpinner size="small" /> : <Upload />}
-                  sx={{ px: 4, py: 1.5 }}
+                  fullWidth
+                  disabled={isLoading || !isFormValid}
+                  startIcon={
+                    isLoading ? (
+                      <LoadingSpinner size="small" />
+                    ) : (
+                      <ArrowUpward sx={{ fontSize: 20 }} />
+                    )
+                  }
+                  sx={{
+                    backgroundColor: '#000',
+                    color: '#fff',
+                    py: 2,
+                    fontSize: '1rem',
+                    fontWeight: 400,
+                    textTransform: 'none',
+                    borderRadius: 1,
+                    boxShadow: 'none',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      backgroundColor: '#333',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      transform: 'translateY(-1px)'
+                    },
+                    '&:active': {
+                      transform: 'translateY(0)'
+                    },
+                    '&:disabled': {
+                      backgroundColor: '#f5f5f5',
+                      color: '#bbb',
+                      transform: 'none',
+                      boxShadow: 'none'
+                    }
+                  }}
                 >
-                  {isLoading ? 'Uploading...' : 'Upload Product'}
+                  {isLoading ? 'Processing...' : 'Upload Product'}
                 </Button>
               </Box>
             </Stack>
           </Box>
-        </Paper>
 
-        {/* Tips */}
-        <Paper elevation={0} sx={{ p: 3, backgroundColor: 'grey.50' }}>
-          <Typography variant="h6" gutterBottom>
-            Tips for Better Results
-          </Typography>
-          <List dense>
-            <ListItem>
-              <ListItemIcon>
-                <Circle sx={{ fontSize: 6, color: 'primary.main' }} />
-              </ListItemIcon>
-              <ListItemText 
-                primary="Take photos in good lighting with clear, readable text"
-                primaryTypographyProps={{ variant: 'body2' }}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Circle sx={{ fontSize: 6, color: 'primary.main' }} />
-              </ListItemIcon>
-              <ListItemText 
-                primary="Ensure the entire ingredient list is visible in the photo"
-                primaryTypographyProps={{ variant: 'body2' }}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Circle sx={{ fontSize: 6, color: 'primary.main' }} />
-              </ListItemIcon>
-              <ListItemText 
-                primary="Use the product's official name as it appears on packaging"
-                primaryTypographyProps={{ variant: 'body2' }}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Circle sx={{ fontSize: 6, color: 'primary.main' }} />
-              </ListItemIcon>
-              <ListItemText 
-                primary="Double-check the UPC code for accuracy"
-                primaryTypographyProps={{ variant: 'body2' }}
-              />
-            </ListItem>
-          </List>
-        </Paper>
-      </Stack>
-    </Container>
+          {/* Tips */}
+          <Box sx={{ pt: 4 }}>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: '#999',
+                fontSize: '0.85rem',
+                textAlign: 'center',
+                lineHeight: 1.6,
+                fontWeight: 300
+              }}
+            >
+              Ensure ingredients are clearly visible and well-lit for accurate AI processing.
+              <br />
+              Photos with crisp text yield the best allergen detection results.
+            </Typography>
+          </Box>
+        </Stack>
+      </Container>
+    </Box>
   );
 };
 
