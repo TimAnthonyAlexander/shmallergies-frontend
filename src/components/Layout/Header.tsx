@@ -16,12 +16,12 @@ import {
 } from '@mui/material';
 import { 
   Menu as MenuIcon,
-  AccountCircle,
   Upload,
   Person,
   ExitToApp,
   Home,
-  Inventory
+  Inventory,
+  QrCodeScanner
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -62,6 +62,7 @@ const Header: React.FC = () => {
   ];
 
   const userMenuItems = user ? [
+    { label: 'Scanner', path: '/scanner', icon: <QrCodeScanner /> },
     { label: 'Upload Product', path: '/upload', icon: <Upload /> },
     { label: 'Profile', path: '/profile', icon: <Person /> },
   ] : [];
@@ -112,17 +113,32 @@ const Header: React.FC = () => {
                 {item.label}
               </Button>
             ))}
+            
+            {/* Scanner Button - Desktop */}
+            {user && (
+              <Button
+                component={Link}
+                to="/scanner"
+                startIcon={<QrCodeScanner />}
+                sx={{
+                  mr: 2,
+                  backgroundColor: 'primary.main',
+                  color: 'white',
+                  fontWeight: 600,
+                  '&:hover': {
+                    backgroundColor: 'primary.dark'
+                  }
+                }}
+              >
+                Scanner
+              </Button>
+            )}
           </Box>
         )}
 
         {/* User Menu */}
         {user ? (
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {!isMobile && (
-              <Typography variant="body2" sx={{ mr: 2, color: 'text.secondary' }}>
-                Hello, {user.name}
-              </Typography>
-            )}
+          <>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -131,69 +147,66 @@ const Header: React.FC = () => {
               onClick={handleUserMenuOpen}
               color="inherit"
             >
-              <Avatar sx={{ width: 32, height: 32, backgroundColor: 'primary.main' }}>
+              <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
                 {user.name.charAt(0).toUpperCase()}
               </Avatar>
             </IconButton>
             <Menu
               id="user-menu"
               anchorEl={userMenuAnchor}
-              open={Boolean(userMenuAnchor)}
-              onClose={handleUserMenuClose}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'right',
               }}
+              keepMounted
               transformOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
               }}
+              open={Boolean(userMenuAnchor)}
+              onClose={handleUserMenuClose}
             >
-              <MenuItem disabled>
-                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+              <Box sx={{ px: 2, py: 1.5 }}>
+                <Typography variant="subtitle2" color="text.primary">
                   {user.name}
                 </Typography>
-              </MenuItem>
+                <Typography variant="body2" color="text.secondary">
+                  {user.email}
+                </Typography>
+              </Box>
               <Divider />
               {userMenuItems.map((item) => (
-                <MenuItem
+                <MenuItem 
                   key={item.path}
-                  onClick={() => {
-                    navigate(item.path);
-                    handleUserMenuClose();
+                  component={Link} 
+                  to={item.path}
+                  onClick={handleUserMenuClose}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1.5,
+                    py: 1.2,
+                    color: item.label === 'Scanner' ? 'primary.main' : 'text.primary',
+                    fontWeight: item.label === 'Scanner' ? 600 : 400
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    {item.icon}
-                    <Typography sx={{ ml: 1 }}>{item.label}</Typography>
-                  </Box>
+                  {item.icon}
+                  {item.label}
                 </MenuItem>
               ))}
               <Divider />
-              <MenuItem onClick={handleLogout}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <ExitToApp />
-                  <Typography sx={{ ml: 1 }}>Logout</Typography>
-                </Box>
+              <MenuItem onClick={handleLogout} sx={{ py: 1.2, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <ExitToApp />
+                Logout
               </MenuItem>
             </Menu>
-          </Box>
+          </>
         ) : (
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button 
-              component={Link} 
-              to="/login"
-              variant="outlined"
-              size="small"
-            >
+            <Button component={Link} to="/login" color="inherit">
               Login
             </Button>
-            <Button 
-              component={Link} 
-              to="/signup"
-              variant="contained"
-              size="small"
-            >
+            <Button component={Link} to="/signup" variant="contained">
               Sign Up
             </Button>
           </Box>
@@ -204,41 +217,73 @@ const Header: React.FC = () => {
           <>
             <IconButton
               size="large"
-              aria-label="show more"
-              aria-controls="mobile-menu"
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
+              edge="start"
               color="inherit"
-              sx={{ ml: 1 }}
+              aria-label="menu"
+              onClick={handleMobileMenuOpen}
             >
               <MenuIcon />
             </IconButton>
             <Menu
               id="mobile-menu"
               anchorEl={mobileMenuAnchor}
-              open={Boolean(mobileMenuAnchor)}
-              onClose={handleMobileMenuClose}
               anchorOrigin={{
                 vertical: 'bottom',
-                horizontal: 'right',
+                horizontal: 'left',
               }}
+              keepMounted
               transformOrigin={{
                 vertical: 'top',
-                horizontal: 'right',
+                horizontal: 'left',
               }}
+              open={Boolean(mobileMenuAnchor)}
+              onClose={handleMobileMenuClose}
             >
               {navigationItems.map((item) => (
-                <MenuItem
+                <MenuItem 
                   key={item.path}
-                  onClick={() => {
-                    navigate(item.path);
-                    handleMobileMenuClose();
+                  component={Link} 
+                  to={item.path}
+                  onClick={handleMobileMenuClose}
+                  sx={{ display: 'flex', alignItems: 'center', gap: 1.5, py: 1.2 }}
+                >
+                  {item.icon}
+                  {item.label}
+                </MenuItem>
+              ))}
+              
+              {/* Scanner Button - Mobile */}
+              {user && (
+                <MenuItem 
+                  component={Link} 
+                  to="/scanner"
+                  onClick={handleMobileMenuClose}
+                  sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 1.5, 
+                    py: 1.2,
+                    color: 'primary.main',
+                    fontWeight: 600
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    {item.icon}
-                    <Typography sx={{ ml: 1 }}>{item.label}</Typography>
-                  </Box>
+                  <QrCodeScanner />
+                  Scanner
+                </MenuItem>
+              )}
+              
+              {user && <Divider />}
+              
+              {userMenuItems.filter(item => item.label !== 'Scanner').map((item) => (
+                <MenuItem 
+                  key={item.path}
+                  component={Link} 
+                  to={item.path}
+                  onClick={handleMobileMenuClose}
+                  sx={{ display: 'flex', alignItems: 'center', gap: 1.5, py: 1.2 }}
+                >
+                  {item.icon}
+                  {item.label}
                 </MenuItem>
               ))}
             </Menu>

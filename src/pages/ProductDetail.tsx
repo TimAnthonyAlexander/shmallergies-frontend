@@ -15,9 +15,7 @@ import {
     Inventory as Package,
     QrCode,
     CalendarToday,
-    Warning,
-    CheckCircle,
-    Info
+    CheckCircle
 } from '@mui/icons-material';
 import { apiClient } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';

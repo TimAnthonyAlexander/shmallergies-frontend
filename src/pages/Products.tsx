@@ -4,17 +4,12 @@ import {
     Box,
     Container,
     Typography,
-    Paper,
     Stack,
     Button,
     TextField,
-    Card,
-    CardContent,
-    CardMedia,
-    Chip,
     Pagination,
     InputAdornment,
-    Avatar
+    Fab
 } from '@mui/material';
 import {
     Search,
@@ -22,14 +17,17 @@ import {
     CalendarToday,
     Visibility,
     QrCode,
-    Add
+    Add,
+    QrCodeScanner
 } from '@mui/icons-material';
 import { apiClient } from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
 import type { ProductSearchResult } from '../types';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
 import ErrorMessage from '../components/UI/ErrorMessage';
 
 const Products: React.FC = () => {
+    const { isAuthenticated } = useAuth();
     const [products, setProducts] = useState<ProductSearchResult[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -643,6 +641,34 @@ const Products: React.FC = () => {
                     )}
                 </Stack>
             </Container>
+
+            {/* Scanner Floating Action Button */}
+            {isAuthenticated && (
+                <Fab
+                    component={Link}
+                    to="/scanner"
+                    sx={{
+                        position: 'fixed',
+                        bottom: 24,
+                        right: 24,
+                        backgroundColor: 'primary.main',
+                        color: 'white',
+                        width: 64,
+                        height: 64,
+                        boxShadow: '0 4px 20px rgba(37, 99, 235, 0.3)',
+                        '&:hover': {
+                            backgroundColor: 'primary.dark',
+                            boxShadow: '0 6px 24px rgba(37, 99, 235, 0.4)',
+                            transform: 'translateY(-2px)'
+                        },
+                        transition: 'all 0.3s ease',
+                        zIndex: 1000
+                    }}
+                    aria-label="Open camera scanner"
+                >
+                    <QrCodeScanner sx={{ fontSize: 28 }} />
+                </Fab>
+            )}
         </Box>
     );
 };

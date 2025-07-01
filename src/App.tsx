@@ -15,6 +15,7 @@ import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import UploadProduct from './pages/UploadProduct';
 import Profile from './pages/Profile';
+import CameraScanner from './pages/CameraScanner';
 
 import './App.css';
 
@@ -82,6 +83,16 @@ const App: React.FC = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/verify-email" element={<EmailVerification />} />
+            
+            {/* Camera scanner route without layout (full screen) */}
+            <Route 
+              path="/scanner" 
+              element={
+                <ProtectedRoute>
+                  <CameraScanner />
+                </ProtectedRoute>
+              } 
+            />
             
             {/* Protected routes with layout */}
             <Route 
