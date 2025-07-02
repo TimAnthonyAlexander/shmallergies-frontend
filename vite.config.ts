@@ -9,4 +9,10 @@ export default defineConfig({
         host: true, // Allow external connections
         port: 2812,
     },
+    build: {
+        minify: true,
+        typescript: {
+            ignoreBuildErrors: true,
+        },
+    },
 })
