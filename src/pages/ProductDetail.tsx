@@ -17,7 +17,7 @@ import {
     CalendarToday,
     CheckCircle
 } from '@mui/icons-material';
-import { apiClient } from '../lib/api';
+import { API_DOMAIN, apiClient } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import type { Product, ProductSafetyCheck } from '../types';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
@@ -151,10 +151,10 @@ const ProductDetail: React.FC = () => {
     }
 
     // Extract unique allergens
-    const allAllergens = product.ingredients?.flatMap(ingredient => 
+    const allAllergens = product.ingredients?.flatMap(ingredient =>
         ingredient.allergens || []
     ) || [];
-    const uniqueAllergens = allAllergens.filter((allergen, index, self) => 
+    const uniqueAllergens = allAllergens.filter((allergen, index, self) =>
         index === self.findIndex(a => a.name === allergen.name)
     );
 
@@ -185,10 +185,10 @@ const ProductDetail: React.FC = () => {
                 {/* Safety Check */}
                 {isAuthenticated && safetyCheck && (
                     <Box sx={{ py: 2 }}>
-                        <Typography 
-                            variant="body1" 
-                            sx={{ 
-                                fontWeight: 500, 
+                        <Typography
+                            variant="body1"
+                            sx={{
+                                fontWeight: 500,
                                 color: safetyCheck.is_safe ? '#000' : '#666',
                                 mb: safetyCheck.is_safe ? 0 : 2
                             }}
@@ -246,7 +246,7 @@ const ProductDetail: React.FC = () => {
                                 <CardMedia
                                     component="img"
                                     height="100%"
-                                    image={'http://shmallergies.test:2811' + product.ingredient_image_url}
+                                    image={API_DOMAIN + product.ingredient_image_url}
                                     alt={`${product.name} ingredients`}
                                     sx={{ objectFit: 'cover' }}
                                 />
@@ -266,14 +266,14 @@ const ProductDetail: React.FC = () => {
                     </Box>
 
                     {/* Product Info */}
-                                         <Box>
-                         <Stack spacing={4}>
-                             <Box>
-                                <Typography 
-                                    variant="h2" 
-                                    component="h1" 
-                                    sx={{ 
-                                        fontWeight: 300, 
+                    <Box>
+                        <Stack spacing={4}>
+                            <Box>
+                                <Typography
+                                    variant="h2"
+                                    component="h1"
+                                    sx={{
+                                        fontWeight: 300,
                                         color: '#000',
                                         fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
                                         letterSpacing: '-0.02em',
@@ -286,10 +286,10 @@ const ProductDetail: React.FC = () => {
                                 <Stack spacing={3}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                         <QrCode sx={{ fontSize: 20, color: '#666' }} />
-                                        <Typography 
-                                            variant="body1" 
-                                            sx={{ 
-                                                fontFamily: 'monospace', 
+                                        <Typography
+                                            variant="body1"
+                                            sx={{
+                                                fontFamily: 'monospace',
                                                 color: '#666',
                                                 fontSize: '0.9rem'
                                             }}
@@ -312,10 +312,10 @@ const ProductDetail: React.FC = () => {
                                 gap: 4
                             }}>
                                 <Box sx={{ textAlign: 'center' }}>
-                                    <Typography 
-                                        variant="h4" 
-                                        sx={{ 
-                                            color: '#000', 
+                                    <Typography
+                                        variant="h4"
+                                        sx={{
+                                            color: '#000',
                                             fontWeight: 500,
                                             mb: 1
                                         }}
@@ -327,10 +327,10 @@ const ProductDetail: React.FC = () => {
                                     </Typography>
                                 </Box>
                                 <Box sx={{ textAlign: 'center' }}>
-                                    <Typography 
-                                        variant="h4" 
-                                        sx={{ 
-                                            color: '#000', 
+                                    <Typography
+                                        variant="h4"
+                                        sx={{
+                                            color: '#000',
                                             fontWeight: 500,
                                             mb: 1
                                         }}
@@ -376,11 +376,11 @@ const ProductDetail: React.FC = () => {
 
                 {/* Ingredients Section */}
                 <Box>
-                    <Typography 
-                        variant="h4" 
-                        sx={{ 
-                            fontWeight: 300, 
-                            mb: 4, 
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            fontWeight: 300,
+                            mb: 4,
                             color: '#000',
                             letterSpacing: '-0.01em'
                         }}
@@ -390,12 +390,12 @@ const ProductDetail: React.FC = () => {
                             {' '}({product.ingredients?.length || 0})
                         </Typography>
                     </Typography>
-                    
+
                     {product.ingredients && product.ingredients.length > 0 ? (
-                        <Box sx={{ 
-                            display: 'grid', 
+                        <Box sx={{
+                            display: 'grid',
                             gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
-                            gap: 2 
+                            gap: 2
                         }}>
                             {product.ingredients.map((ingredient, index) => (
                                 <Box
@@ -406,9 +406,9 @@ const ProductDetail: React.FC = () => {
                                         borderBottom: '1px solid #f0f0f0'
                                     }}
                                 >
-                                    <Typography 
-                                        variant="body1" 
-                                        sx={{ 
+                                    <Typography
+                                        variant="body1"
+                                        sx={{
                                             color: '#000',
                                             fontWeight: 400,
                                             fontSize: '0.95rem'
@@ -430,11 +430,11 @@ const ProductDetail: React.FC = () => {
 
                 {/* Allergens Section */}
                 <Box>
-                    <Typography 
-                        variant="h4" 
-                        sx={{ 
-                            fontWeight: 300, 
-                            mb: 4, 
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            fontWeight: 300,
+                            mb: 4,
                             color: '#000',
                             letterSpacing: '-0.01em'
                         }}
@@ -444,7 +444,7 @@ const ProductDetail: React.FC = () => {
                             {' '}({uniqueAllergens.length})
                         </Typography>
                     </Typography>
-                    
+
                     {uniqueAllergens.length > 0 ? (
                         <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', gap: 2 }}>
                             {uniqueAllergens.map((allergen, index) => (
@@ -479,7 +479,7 @@ const ProductDetail: React.FC = () => {
                 {/* AI Processing Note */}
                 <Box sx={{ py: 2 }}>
                     <Typography variant="body2" sx={{ color: '#999', lineHeight: 1.6 }}>
-                        <strong>AI Processing:</strong> Allergen information is automatically extracted from ingredient photos. 
+                        <strong>AI Processing:</strong> Allergen information is automatically extracted from ingredient photos.
                         Always verify with the actual product label and consult healthcare professionals for severe allergies.
                     </Typography>
                 </Box>
