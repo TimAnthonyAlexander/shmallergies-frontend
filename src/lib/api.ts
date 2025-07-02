@@ -2,7 +2,7 @@ const API_BASE_URL = import.meta.env.DEV
     ? 'https://shmallergies.test:2811/api'
     : 'https://shmallergies-api.timanthonyalexander.de/api';
 
-const API_DOMAIN = import.meta.env.DEV
+export const API_DOMAIN = import.meta.env.DEV
     ? 'https://shmallergies.test:2811'
     : 'https://shmallergies-api.timanthonyalexander.de';
 
