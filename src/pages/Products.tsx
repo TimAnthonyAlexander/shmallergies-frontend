@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Container, Typography, Stack, Button, TextField, Pagination, InputAdornment, Fab } from '@mui/material';
+import { Box, Container, Typography, Stack, Button, TextField, Pagination, InputAdornment, Fab, Chip } from '@mui/material';
 import { Search, Inventory as Package, QrCode, Add, QrCodeScanner } from '@mui/icons-material';
 import { apiClient } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
