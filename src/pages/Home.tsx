@@ -15,7 +15,8 @@ import {
   Upload, 
   CheckCircle, 
   Warning,
-  ArrowForward
+  ArrowForward,
+  QrCodeScanner
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -147,6 +148,28 @@ const Home: React.FC = () => {
               <>
                 <Button
                   component={Link}
+                  to="/scanner"
+                  variant="contained"
+                  size="large"
+                  startIcon={<QrCodeScanner />}
+                  sx={{ 
+                    px: 4, 
+                    py: 1.5,
+                    backgroundColor: '#1976d2',
+                    color: 'white',
+                    borderRadius: 1,
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    boxShadow: '0 4px 10px rgba(25, 118, 210, 0.2)',
+                    '&:hover': {
+                      backgroundColor: '#1565c0'
+                    }
+                  }}
+                >
+                  Scan Product
+                </Button>
+                <Button
+                  component={Link}
                   to="/upload"
                   variant="contained"
                   size="large"
@@ -198,6 +221,64 @@ const Home: React.FC = () => {
             </Typography>
           )}
         </Box>
+
+        {/* Scanner Promotion for authenticated users */}
+        {isAuthenticated && (
+          <Box sx={{ 
+            background: 'linear-gradient(to right, #f5f9ff, #e1effe)',
+            borderRadius: 4,
+            p: { xs: 4, md: 6 },
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 4
+          }}>
+            <Box sx={{ maxWidth: { md: '60%' } }}>
+              <Typography variant="h4" component="h2" sx={{ fontWeight: 500, mb: 2, color: '#1565c0' }}>
+                Quick Allergen Check
+              </Typography>
+              <Typography variant="body1" sx={{ color: '#555', mb: 3, lineHeight: 1.6 }}>
+                Scan product barcodes instantly to check for allergens and get personalized safety information. 
+                Perfect for shopping or checking products you already have.
+              </Typography>
+              <Button
+                component={Link}
+                to="/scanner"
+                variant="contained"
+                size="large"
+                startIcon={<QrCodeScanner />}
+                sx={{ 
+                  backgroundColor: '#1976d2',
+                  color: 'white',
+                  fontWeight: 500,
+                  textTransform: 'none',
+                  px: 4, 
+                  py: 1.5,
+                  boxShadow: '0 4px 10px rgba(25, 118, 210, 0.3)',
+                  '&:hover': {
+                    backgroundColor: '#1565c0'
+                  }
+                }}
+              >
+                Open Scanner
+              </Button>
+            </Box>
+            <Box sx={{ 
+              backgroundColor: '#fff', 
+              borderRadius: 3,
+              p: 3,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 10px 25px rgba(25, 118, 210, 0.15)',
+              width: { xs: '100%', md: '200px' },
+              height: { xs: '200px', md: '200px' }
+            }}>
+              <QrCodeScanner sx={{ fontSize: 100, color: '#1976d2' }} />
+            </Box>
+          </Box>
+        )}
 
         <Divider sx={{ borderColor: '#f0f0f0' }} />
 
