@@ -18,7 +18,9 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  Fab
+  Fab,
+  Badge,
+  Paper
 } from '@mui/material';
 import {
   Close,
@@ -33,7 +35,8 @@ import {
   Inventory,
   ShoppingCart,
   Add,
-  Dialpad
+  Dialpad,
+  History
 } from '@mui/icons-material';
 import { 
   BrowserMultiFormatReader, 
@@ -78,6 +81,8 @@ const CameraScanner: React.FC = () => {
   const [isManualEntryOpen, setIsManualEntryOpen] = useState(false);
   const [manualBarcode, setManualBarcode] = useState('');
   const [manualBarcodeError, setManualBarcodeError] = useState('');
+  const [hasAllergicProducts, setHasAllergicProducts] = useState(false);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
   // Initialize camera and scanner
   useEffect(() => {
@@ -302,6 +307,11 @@ const CameraScanner: React.FC = () => {
             : item
         )
       );
+
+      // Update allergic products indicator
+      if (safetyCheck && !safetyCheck.is_safe) {
+        setHasAllergicProducts(true);
+      }
       
       // Show appropriate feedback
       if (safetyCheck) {
@@ -400,6 +410,14 @@ const CameraScanner: React.FC = () => {
     // Process the barcode as if it was scanned
     handleBarcodeDetected(manualBarcode.trim());
     handleManualEntryClose();
+  };
+
+  const handleHistoryModalOpen = () => {
+    setIsHistoryModalOpen(true);
+  };
+  
+  const handleHistoryModalClose = () => {
+    setIsHistoryModalOpen(false);
   };
 
   if (cameraPermission === 'denied') {
@@ -564,6 +582,25 @@ const CameraScanner: React.FC = () => {
           >
             Scanner aktiv
           </Typography>
+          
+          {/* Manual Entry FAB - Moved below scanner rectangle */}
+          <Fab
+            color="primary"
+            aria-label="manual entry"
+            size="medium"
+            sx={{
+              position: 'absolute',
+              bottom: '35%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 10,
+              boxShadow: '0 4px 10px rgba(0,0,0,0.25)',
+              mt: 4
+            }}
+            onClick={handleManualEntryOpen}
+          >
+            <Dialpad />
+          </Fab>
         </Box>
         
         {/* Top Controls */}
@@ -628,72 +665,113 @@ const CameraScanner: React.FC = () => {
             {scanCount} Produkt{scanCount !== 1 ? 'e' : ''} gescannt
           </Typography>
         </Box>
-
-        {/* Manual Entry FAB */}
-        <Fab
-          color="primary"
-          aria-label="add"
-          sx={{
-            position: 'absolute',
-            bottom: '45vh',
-            right: 16,
-            zIndex: 10
-          }}
-          onClick={handleManualEntryOpen}
-        >
-          <Dialpad />
-        </Fab>
       </Box>
       
-      {/* Scanned Products List */}
-      <Box sx={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        maxHeight: '40vh',
-        overflowY: 'auto',
-        background: 'linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%)',
-        p: 2,
-        zIndex: 10
-      }}>
-        <Stack spacing={2}>
-          {scannedProducts.map((scannedProduct, index) => (
-            <Slide key={scannedProduct.upcCode + scannedProduct.timestamp} direction="up" in timeout={300}>
+      {/* Bottom Area - Redesigned to be more modern and simple */}
+      <Paper 
+        elevation={24}
+        sx={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          background: 'rgba(255,255,255,0.95)',
+          backdropFilter: 'blur(10px)',
+          p: 2,
+          pt: 3,
+          zIndex: 10,
+          transition: 'all 0.3s ease',
+          boxShadow: '0 -5px 25px rgba(0,0,0,0.15)'
+        }}
+      >
+        {scannedProducts.length > 0 ? (
+          <>
+            <Stack 
+              direction="row" 
+              justifyContent="space-between" 
+              alignItems="center" 
+              spacing={2} 
+              sx={{ mb: 1 }}
+            >
+              <Typography 
+                variant="subtitle1" 
+                sx={{ 
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  flexGrow: 1
+                }}
+              >
+                Letzter Scan
+              </Typography>
+              
+              <Fab
+                color="secondary"
+                aria-label="history"
+                size="small"
+                onClick={handleHistoryModalOpen}
+                sx={{
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                  backgroundColor: hasAllergicProducts ? 'error.main' : 'secondary.main',
+                }}
+              >
+                <Badge 
+                  color="error" 
+                  variant="dot" 
+                  invisible={!hasAllergicProducts}
+                  overlap="circular"
+                >
+                  <History sx={{ color: 'white' }} />
+                </Badge>
+              </Fab>
+            </Stack>
+            
+            <Slide direction="up" in timeout={300}>
               <Card sx={{
-                backgroundColor: getSafetyColor(scannedProduct.safetyCheck),
-                border: `2px solid ${getSafetyBorderColor(scannedProduct.safetyCheck)}`,
+                backgroundColor: 'white',
                 borderRadius: 2,
-                opacity: index === 0 ? 1 : 0.8,
-                transform: `scale(${index === 0 ? 1 : 0.95})`,
-                transition: 'all 0.3s ease'
+                position: 'relative',
+                overflow: 'visible',
+                mb: hasAllergicProducts ? 2 : 0,
+                '&:before': scannedProducts[0].safetyCheck && {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 8,
+                  backgroundColor: scannedProducts[0].safetyCheck?.is_safe ? '#4caf50' : '#f44336',
+                  borderTopLeftRadius: 8,
+                  borderBottomLeftRadius: 8
+                }
               }}>
-                <CardContent sx={{ py: 2, '&:last-child': { pb: 2 } }}>
+                <CardContent sx={{ py: 2, pl: 3, '&:last-child': { pb: 2 } }}>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <Box sx={{ flexShrink: 0 }}>
-                      {scannedProduct.isLoading ? (
-                        <CircularProgress size={24} />
+                      {scannedProducts[0].isLoading ? (
+                        <CircularProgress size={24} color="primary" />
                       ) : (
-                        getSafetyIcon(scannedProduct.safetyCheck)
+                        getSafetyIcon(scannedProducts[0].safetyCheck)
                       )}
                     </Box>
                     
                     <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                      {scannedProduct.isLoading ? (
+                      {scannedProducts[0].isLoading ? (
                         <Typography variant="body2" color="text.secondary">
                           Produkt wird gesucht...
                         </Typography>
-                      ) : scannedProduct.product ? (
+                      ) : scannedProducts[0].product ? (
                         <>
                           <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                            {scannedProduct.product.name}
+                            {scannedProducts[0].product.name}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'monospace' }}>
-                            {scannedProduct.upcCode}
+                          <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+                            {scannedProducts[0].upcCode}
                           </Typography>
-                          {scannedProduct.safetyCheck && !scannedProduct.safetyCheck.is_safe && (
+                          {scannedProducts[0].safetyCheck && !scannedProducts[0].safetyCheck.is_safe && (
                             <Typography variant="body2" sx={{ color: '#d32f2f', fontWeight: 500, mt: 0.5 }}>
-                              Allergene: {scannedProduct.safetyCheck.potential_conflicts.join(', ')}
+                              Allergene: {scannedProducts[0].safetyCheck.potential_conflicts.join(', ')}
                             </Typography>
                           )}
                         </>
@@ -702,14 +780,14 @@ const CameraScanner: React.FC = () => {
                           <Typography variant="body2" color="text.secondary">
                             Produkt nicht gefunden
                           </Typography>
-                          <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'monospace' }}>
-                            {scannedProduct.upcCode}
+                          <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+                            {scannedProducts[0].upcCode}
                           </Typography>
                           <Button 
                             variant="text" 
                             size="small" 
                             startIcon={<Add />} 
-                            onClick={() => navigate(`/upload?upc=${scannedProduct.upcCode}`)}
+                            onClick={() => navigate(`/upload?upc=${scannedProducts[0].upcCode}`)}
                             sx={{ 
                               mt: 0.5, 
                               color: '#4caf50', 
@@ -724,19 +802,31 @@ const CameraScanner: React.FC = () => {
                       )}
                     </Box>
                     
-                    {scannedProduct.product ? (
+                    {scannedProducts[0].product ? (
                       <IconButton
                         size="small"
-                        onClick={() => navigate(`/products/${scannedProduct.product!.id}`)}
-                        sx={{ color: 'text.secondary' }}
+                        onClick={() => navigate(`/products/${scannedProducts[0].product!.id}`)}
+                        sx={{ 
+                          color: 'primary.main',
+                          backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                          '&:hover': {
+                            backgroundColor: 'rgba(25, 118, 210, 0.12)',
+                          }
+                        }}
                       >
                         <Inventory />
                       </IconButton>
                     ) : (
                       <IconButton
                         size="small"
-                        onClick={() => navigate(`/upload?upc=${scannedProduct.upcCode}`)}
-                        sx={{ color: '#4caf50' }}
+                        onClick={() => navigate(`/upload?upc=${scannedProducts[0].upcCode}`)}
+                        sx={{ 
+                          color: '#4caf50',
+                          backgroundColor: 'rgba(76, 175, 80, 0.08)',
+                          '&:hover': {
+                            backgroundColor: 'rgba(76, 175, 80, 0.12)',
+                          }
+                        }}
                       >
                         <Add />
                       </IconButton>
@@ -745,23 +835,212 @@ const CameraScanner: React.FC = () => {
                 </CardContent>
               </Card>
             </Slide>
-          ))}
-          
-          {scannedProducts.length === 0 && (
-            <Box sx={{ textAlign: 'center', py: 4 }}>
-              <ShoppingCart sx={{ fontSize: 48, color: 'rgba(255,255,255,0.3)', mb: 2 }} />
-              <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.7)' }}>
-                Scannen Sie einen Barcode, um zu beginnen
-              </Typography>
-            </Box>
-          )}
-        </Stack>
-      </Box>
+            
+            {/* Allergic Products Warning */}
+            {hasAllergicProducts && (
+              <Alert 
+                severity="warning" 
+                icon={<Warning sx={{ fontSize: '1.2rem' }} />}
+                sx={{ 
+                  borderRadius: 2,
+                  '& .MuiAlert-message': { 
+                    fontSize: '0.875rem',
+                    display: 'flex',
+                    alignItems: 'center'
+                  }
+                }}
+              >
+                Sie haben Produkte mit potentiellen Allergenen gescannt
+              </Alert>
+            )}
+          </>
+        ) : (
+          <Box sx={{ textAlign: 'center', py: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <ShoppingCart sx={{ fontSize: 48, color: 'rgba(0,0,0,0.2)', mb: 2 }} />
+            <Typography variant="body1" sx={{ color: 'text.secondary', mb: 2 }}>
+              Scannen Sie einen Barcode, um zu beginnen
+            </Typography>
+            <Fab
+              color="secondary"
+              aria-label="history"
+              size="small"
+              onClick={handleHistoryModalOpen}
+              sx={{
+                mt: 1
+              }}
+            >
+              <History />
+            </Fab>
+          </Box>
+        )}
+      </Paper>
+      
+      {/* Scan History Modal */}
+      <Dialog 
+        open={isHistoryModalOpen} 
+        onClose={handleHistoryModalClose}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            overflow: 'hidden'
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          px: 3,
+          py: 2,
+          backgroundColor: 'background.paper',
+          borderBottom: '1px solid rgba(0,0,0,0.08)'
+        }}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <History fontSize="small" color="action" />
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>Scan-Verlauf</Typography>
+          </Stack>
+          <IconButton size="small" onClick={handleHistoryModalClose}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ p: 0 }}>
+          <Stack spacing={0} divider={<Box sx={{ borderBottom: '1px solid rgba(0,0,0,0.06)' }} />}>
+            {scannedProducts.length > 0 ? scannedProducts.map((scannedProduct, index) => (
+              <Box 
+                key={scannedProduct.upcCode + scannedProduct.timestamp}
+                sx={{ 
+                  p: 2, 
+                  borderLeft: '4px solid',
+                  borderLeftColor: scannedProduct.safetyCheck ? 
+                    (scannedProduct.safetyCheck.is_safe ? '#4caf50' : '#f44336') : 
+                    'transparent',
+                  backgroundColor: index % 2 === 0 ? 'rgba(0,0,0,0.02)' : 'transparent',
+                  transition: 'background-color 0.2s ease'
+                }}
+              >
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <Box sx={{ flexShrink: 0 }}>
+                    {scannedProduct.isLoading ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      getSafetyIcon(scannedProduct.safetyCheck)
+                    )}
+                  </Box>
+                  
+                  <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                    {scannedProduct.isLoading ? (
+                      <Typography variant="body2" color="text.secondary">
+                        Produkt wird gesucht...
+                      </Typography>
+                    ) : scannedProduct.product ? (
+                      <>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                          {scannedProduct.product.name}
+                        </Typography>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 0.5 }}>
+                          <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+                            {scannedProduct.upcCode}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {new Date(scannedProduct.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                          </Typography>
+                        </Box>
+                        {scannedProduct.safetyCheck && !scannedProduct.safetyCheck.is_safe && (
+                          <Typography variant="body2" sx={{ color: '#d32f2f', fontWeight: 500, mt: 0.5 }}>
+                            Allergene: {scannedProduct.safetyCheck.potential_conflicts.join(', ')}
+                          </Typography>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <Typography variant="body2" color="text.secondary">
+                          Produkt nicht gefunden
+                        </Typography>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 0.5 }}>
+                          <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+                            {scannedProduct.upcCode}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {new Date(scannedProduct.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                          </Typography>
+                        </Box>
+                      </>
+                    )}
+                  </Box>
+                  
+                  {scannedProduct.product ? (
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        navigate(`/products/${scannedProduct.product!.id}`);
+                        handleHistoryModalClose();
+                      }}
+                      sx={{ 
+                        color: 'primary.main',
+                        backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                        '&:hover': {
+                          backgroundColor: 'rgba(25, 118, 210, 0.12)',
+                        }
+                      }}
+                    >
+                      <Inventory fontSize="small" />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        navigate(`/upload?upc=${scannedProduct.upcCode}`);
+                        handleHistoryModalClose();
+                      }}
+                      sx={{ 
+                        color: '#4caf50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.08)',
+                        '&:hover': {
+                          backgroundColor: 'rgba(76, 175, 80, 0.12)',
+                        }
+                      }}
+                    >
+                      <Add fontSize="small" />
+                    </IconButton>
+                  )}
+                </Stack>
+              </Box>
+            )) : (
+              <Box sx={{ textAlign: 'center', py: 6 }}>
+                <ShoppingCart sx={{ fontSize: 48, color: 'rgba(0,0,0,0.2)', mb: 2 }} />
+                <Typography variant="body1" color="text.secondary">
+                  Keine Produkte gescannt
+                </Typography>
+              </Box>
+            )}
+          </Stack>
+        </DialogContent>
+      </Dialog>
       
       {/* Manual Entry Dialog */}
-      <Dialog open={isManualEntryOpen} onClose={handleManualEntryClose}>
-        <DialogTitle>Barcode manuell eingeben</DialogTitle>
-        <DialogContent>
+      <Dialog 
+        open={isManualEntryOpen} 
+        onClose={handleManualEntryClose}
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            overflow: 'hidden'
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          borderBottom: '1px solid rgba(0,0,0,0.08)',
+          px: 3,
+          py: 2,
+        }}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Dialpad fontSize="small" color="action" />
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>Barcode manuell eingeben</Typography>
+          </Stack>
+        </DialogTitle>
+        <DialogContent sx={{ p: 3, pt: 3 }}>
           <TextField
             autoFocus
             margin="dense"
@@ -784,11 +1063,25 @@ const CameraScanner: React.FC = () => {
                 handleManualEntrySubmit();
               }
             }}
+            sx={{
+              mt: 0
+            }}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleManualEntryClose}>Abbrechen</Button>
-          <Button onClick={handleManualEntrySubmit} variant="contained">Suchen</Button>
+        <DialogActions sx={{ px: 3, py: 2, borderTop: '1px solid rgba(0,0,0,0.08)' }}>
+          <Button 
+            onClick={handleManualEntryClose}
+            sx={{ fontWeight: 500 }}
+          >
+            Abbrechen
+          </Button>
+          <Button 
+            onClick={handleManualEntrySubmit} 
+            variant="contained"
+            disableElevation
+          >
+            Suchen
+          </Button>
         </DialogActions>
       </Dialog>
       
