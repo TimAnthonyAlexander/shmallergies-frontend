@@ -25,9 +25,15 @@ import {
   FlashOff,
   Cameraswitch,
   Inventory,
-  ShoppingCart
+  ShoppingCart,
+  Add
 } from '@mui/icons-material';
-import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
+import { 
+  BrowserMultiFormatReader, 
+  NotFoundException, 
+  DecodeHintType, 
+  BarcodeFormat 
+} from '@zxing/library';
 import { apiClient } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import type { Product, ProductSafetyCheck } from '../types';
@@ -60,6 +66,8 @@ const CameraScanner: React.FC = () => {
   const [scanCount, setScanCount] = useState(0);
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
   const [showWarningSnackbar, setShowWarningSnackbar] = useState(false);
+  const [scanActive, setScanActive] = useState(false);
+  const scanIntervalRef = useRef<number | null>(null);
 
   // Initialize camera and scanner
   useEffect(() => {
@@ -95,12 +103,13 @@ const CameraScanner: React.FC = () => {
         }
       }
       
-      // Request camera permission with specific constraints for better Firefox compatibility
+      // Request camera permission with optimized constraints for performance
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           facingMode: 'environment', // Prefer back camera
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+          width: { ideal: 640 },     // Lower resolution for better performance
+          height: { ideal: 480 },
+          frameRate: { ideal: 15 }   // Lower frame rate for better performance
         } 
       });
       setCameraPermission('granted');
@@ -121,8 +130,22 @@ const CameraScanner: React.FC = () => {
       );
       setCurrentDevice(backCamera?.deviceId || videoDevices[0]?.deviceId || '');
       
-      // Initialize ZXing reader
-      codeReader.current = new BrowserMultiFormatReader();
+      // Initialize ZXing reader with optimized hints
+      const hints = new Map();
+      // Prioritize common product barcode formats for better performance
+      hints.set(DecodeHintType.POSSIBLE_FORMATS, [
+        BarcodeFormat.EAN_13,
+        BarcodeFormat.EAN_8,
+        BarcodeFormat.UPC_A,
+        BarcodeFormat.UPC_E,
+        BarcodeFormat.CODE_128,
+        BarcodeFormat.CODE_39,
+      ]);
+      // Improve speed with these hints
+      hints.set(DecodeHintType.TRY_HARDER, false);
+      hints.set(DecodeHintType.ASSUME_GS1, false);
+      
+      codeReader.current = new BrowserMultiFormatReader(hints);
       
       // Start scanning
       await startScanning();
@@ -153,7 +176,7 @@ const CameraScanner: React.FC = () => {
       setIsScanning(true);
       scanningRef.current = true;
       
-      // Start continuous scanning
+      // Start video stream first
       await codeReader.current.decodeFromVideoDevice(
         currentDevice || null,
         videoRef.current,
@@ -161,6 +184,10 @@ const CameraScanner: React.FC = () => {
           if (result) {
             const scannedCode = result.getText();
             handleBarcodeDetected(scannedCode);
+            
+            // Show visual feedback for successful scan
+            setScanActive(true);
+            setTimeout(() => setScanActive(false), 300);
           }
           if (error && !(error instanceof NotFoundException)) {
             console.error('Scanning error:', error);
@@ -174,7 +201,29 @@ const CameraScanner: React.FC = () => {
         const track = stream.getVideoTracks()[0];
         const capabilities = track.getCapabilities() as any;
         setHasFlash(!!(capabilities && capabilities.torch));
+        
+        // Set optimal camera settings for scanning
+        try {
+          await track.applyConstraints({
+            advanced: [{ 
+              focusMode: 'continuous',
+              exposureMode: 'continuous',
+              whiteBalanceMode: 'continuous'
+            } as any]
+          });
+        } catch (e) {
+          console.warn('Could not apply optimal camera settings:', e);
+        }
       }
+      
+      // Visual scanning pulse to show scanner is active
+      const pulseScan = () => {
+        setScanActive(true);
+        setTimeout(() => setScanActive(false), 150);
+      };
+      
+      // Create a scanning pulse every 2 seconds to show activity
+      scanIntervalRef.current = window.setInterval(pulseScan, 2000);
       
     } catch (error) {
       console.error('Failed to start scanning:', error);
@@ -189,6 +238,11 @@ const CameraScanner: React.FC = () => {
     }
     scanningRef.current = false;
     setIsScanning(false);
+    
+    if (scanIntervalRef.current) {
+      clearInterval(scanIntervalRef.current);
+      scanIntervalRef.current = null;
+    }
   };
 
   const handleBarcodeDetected = useCallback(async (upcCode: string) => {
@@ -403,7 +457,12 @@ const CameraScanner: React.FC = () => {
             border: '3px solid #fff',
             borderRadius: 2,
             position: 'relative',
-            boxShadow: '0 0 0 9999px rgba(0,0,0,0.3)'
+            boxShadow: '0 0 0 9999px rgba(0,0,0,0.3)',
+            transition: 'box-shadow 0.2s ease, border 0.2s ease',
+            ...(scanActive && {
+              border: '3px solid #4caf50',
+              boxShadow: '0 0 0 9999px rgba(0,0,0,0.4), 0 0 20px rgba(76,175,80,0.5)'
+            })
           }}>
             {/* Corner indicators */}
             {[
@@ -420,7 +479,12 @@ const CameraScanner: React.FC = () => {
                   height: 20,
                   border: '3px solid #4caf50',
                   borderRadius: 1,
-                  ...position
+                  ...position,
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  ...(scanActive && {
+                    transform: 'scale(1.2)',
+                    boxShadow: '0 0 10px rgba(76,175,80,0.7)'
+                  })
                 }}
               />
             ))}
@@ -434,7 +498,7 @@ const CameraScanner: React.FC = () => {
                 right: 0,
                 height: 2,
                 background: 'linear-gradient(90deg, transparent, #4caf50, transparent)',
-                animation: 'scanLine 2s linear infinite',
+                animation: 'scanLine 1.5s linear infinite',
                 '@keyframes scanLine': {
                   '0%': { transform: 'translateY(0)' },
                   '100%': { transform: 'translateY(200px)' }
@@ -443,6 +507,25 @@ const CameraScanner: React.FC = () => {
               />
             )}
           </Box>
+          
+          {/* Scanning indicator text */}
+          <Typography
+            variant="caption"
+            sx={{
+              position: 'absolute',
+              bottom: '40%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              color: 'white',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              px: 2,
+              py: 0.5,
+              borderRadius: 1,
+              fontWeight: 500
+            }}
+          >
+            Scanner aktiv
+          </Typography>
         </Box>
         
         {/* Top Controls */}
@@ -569,17 +652,40 @@ const CameraScanner: React.FC = () => {
                           <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'monospace' }}>
                             {scannedProduct.upcCode}
                           </Typography>
+                          <Button 
+                            variant="text" 
+                            size="small" 
+                            startIcon={<Add />} 
+                            onClick={() => navigate(`/upload-product?upc=${scannedProduct.upcCode}`)}
+                            sx={{ 
+                              mt: 0.5, 
+                              color: '#4caf50', 
+                              p: 0, 
+                              fontWeight: 500,
+                              '&:hover': { backgroundColor: 'transparent' }
+                            }}
+                          >
+                            Produkt hinzufügen
+                          </Button>
                         </>
                       )}
                     </Box>
                     
-                    {scannedProduct.product && (
+                    {scannedProduct.product ? (
                       <IconButton
                         size="small"
                         onClick={() => navigate(`/products/${scannedProduct.product!.id}`)}
                         sx={{ color: 'text.secondary' }}
                       >
                         <Inventory />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        size="small"
+                        onClick={() => navigate(`/upload-product?upc=${scannedProduct.upcCode}`)}
+                        sx={{ color: '#4caf50' }}
+                      >
+                        <Add />
                       </IconButton>
                     )}
                   </Stack>

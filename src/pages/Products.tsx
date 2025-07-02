@@ -1,25 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {
-    Box,
-    Container,
-    Typography,
-    Stack,
-    Button,
-    TextField,
-    Pagination,
-    InputAdornment,
-    Fab
-} from '@mui/material';
-import {
-    Search,
-    Inventory as Package,
-    CalendarToday,
-    Visibility,
-    QrCode,
-    Add,
-    QrCodeScanner
-} from '@mui/icons-material';
+import { Box, Container, Typography, Stack, Button, TextField, Pagination, InputAdornment, Fab } from '@mui/material';
+import { Search, Inventory as Package, QrCode, Add, QrCodeScanner } from '@mui/icons-material';
 import { apiClient } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import type { ProductSearchResult } from '../types';
@@ -97,7 +79,7 @@ const Products: React.FC = () => {
     };
 
     return (
-        <Box sx={{ 
+        <Box sx={{
             minHeight: '100vh',
             backgroundColor: '#fafafa',
             py: { xs: 4, md: 8 }
@@ -105,15 +87,15 @@ const Products: React.FC = () => {
             <Container maxWidth="xl" sx={{ px: { xs: 3, md: 6 } }}>
                 <Stack spacing={{ xs: 6, md: 10 }}>
                     {/* Header */}
-                    <Box sx={{ 
+                    <Box sx={{
                         textAlign: 'center',
                         maxWidth: 680,
                         mx: 'auto',
                         px: 2
                     }}>
-                        <Typography 
+                        <Typography
                             variant="h1"
-                            sx={{ 
+                            sx={{
                                 fontSize: { xs: '2.5rem', md: '3.5rem' },
                                 fontWeight: 300,
                                 letterSpacing: '-0.04em',
@@ -124,9 +106,9 @@ const Products: React.FC = () => {
                         >
                             Products
                         </Typography>
-                        <Typography 
+                        <Typography
                             variant="h5"
-                            sx={{ 
+                            sx={{
                                 fontSize: { xs: '1.1rem', md: '1.3rem' },
                                 fontWeight: 400,
                                 color: '#666666',
@@ -140,13 +122,13 @@ const Products: React.FC = () => {
                     </Box>
 
                     {/* Search */}
-                    <Box sx={{ 
+                    <Box sx={{
                         maxWidth: 720,
                         mx: 'auto',
                         width: '100%'
                     }}>
                         <Box component="form" onSubmit={handleSearch}>
-                            <Box sx={{ 
+                            <Box sx={{
                                 display: 'flex',
                                 gap: 2,
                                 alignItems: 'stretch'
@@ -246,18 +228,18 @@ const Products: React.FC = () => {
                     )}
 
                     {/* Results Info & Actions */}
-                    <Box sx={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
                         justifyContent: 'space-between',
                         maxWidth: 1400,
                         mx: 'auto',
                         width: '100%',
                         px: 1
                     }}>
-                        <Typography 
-                            variant="body2" 
-                            sx={{ 
+                        <Typography
+                            variant="body2"
+                            sx={{
                                 color: '#666666',
                                 fontSize: '0.9rem',
                                 fontWeight: 400
@@ -269,7 +251,7 @@ const Products: React.FC = () => {
                                 <>{products.length} of {total} products</>
                             )}
                         </Typography>
-                        
+
                         <Button
                             component={Link}
                             to="/upload"
@@ -291,16 +273,16 @@ const Products: React.FC = () => {
 
                     {/* Products Grid */}
                     {isLoading ? (
-                        <Box sx={{ 
-                            display: 'flex', 
-                            justifyContent: 'center', 
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
                             py: { xs: 8, md: 12 }
                         }}>
                             <LoadingSpinner size="large" />
                         </Box>
                     ) : products.length === 0 ? (
-                        <Box sx={{ 
-                            textAlign: 'center', 
+                        <Box sx={{
+                            textAlign: 'center',
                             py: { xs: 8, md: 12 },
                             maxWidth: 480,
                             mx: 'auto'
@@ -318,9 +300,9 @@ const Products: React.FC = () => {
                             }}>
                                 <Package sx={{ fontSize: 28, color: '#cccccc' }} />
                             </Box>
-                            <Typography 
-                                variant="h5" 
-                                sx={{ 
+                            <Typography
+                                variant="h5"
+                                sx={{
                                     fontSize: '1.4rem',
                                     fontWeight: 400,
                                     color: '#1a1a1a',
@@ -330,9 +312,9 @@ const Products: React.FC = () => {
                             >
                                 {searchMode === 'search' ? 'No matches found' : 'No products yet'}
                             </Typography>
-                            <Typography 
-                                variant="body1" 
-                                sx={{ 
+                            <Typography
+                                variant="body1"
+                                sx={{
                                     color: '#666666',
                                     mb: 5,
                                     lineHeight: 1.6,
@@ -368,7 +350,7 @@ const Products: React.FC = () => {
                             </Button>
                         </Box>
                     ) : (
-                        <Box sx={{ 
+                        <Box sx={{
                             maxWidth: 1400,
                             mx: 'auto',
                             width: '100%'
@@ -384,7 +366,7 @@ const Products: React.FC = () => {
                                 gap: { xs: 3, md: 4 }
                             }}>
                                 {products.map((product) => (
-                                    <Box 
+                                    <Box
                                         key={product.id}
                                         component={Link}
                                         to={`/products/${product.id}`}
@@ -400,9 +382,9 @@ const Products: React.FC = () => {
                                             }
                                         }}
                                     >
-                                        <Box 
+                                        <Box
                                             className="product-card"
-                                            sx={{ 
+                                            sx={{
                                                 backgroundColor: '#ffffff',
                                                 borderRadius: '16px',
                                                 overflow: 'hidden',
@@ -443,14 +425,14 @@ const Products: React.FC = () => {
                                             </Box>
 
                                             {/* Product Info */}
-                                            <Box sx={{ 
+                                            <Box sx={{
                                                 p: { xs: 3, md: 4 },
                                                 flexGrow: 1,
                                                 display: 'flex',
                                                 flexDirection: 'column'
                                             }}>
-                                                <Typography 
-                                                    variant="h6" 
+                                                <Typography
+                                                    variant="h6"
                                                     sx={{
                                                         fontSize: '1.1rem',
                                                         fontWeight: 500,
@@ -467,9 +449,9 @@ const Products: React.FC = () => {
                                                     {product.name}
                                                 </Typography>
 
-                                                <Box sx={{ 
-                                                    display: 'flex', 
-                                                    alignItems: 'center', 
+                                                <Box sx={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
                                                     mb: 3,
                                                     py: 1,
                                                     px: 2,
@@ -477,9 +459,9 @@ const Products: React.FC = () => {
                                                     borderRadius: '8px'
                                                 }}>
                                                     <QrCode sx={{ fontSize: 14, mr: 1, color: '#999999' }} />
-                                                    <Typography 
-                                                        variant="body2" 
-                                                        sx={{ 
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{
                                                             fontFamily: 'SF Mono, Monaco, monospace',
                                                             fontSize: '0.85rem',
                                                             color: '#666666',
@@ -490,7 +472,7 @@ const Products: React.FC = () => {
                                                     </Typography>
                                                 </Box>
 
-                                                <Box sx={{ 
+                                                <Box sx={{
                                                     display: 'flex',
                                                     gap: 3,
                                                     mb: 3
@@ -503,9 +485,9 @@ const Products: React.FC = () => {
                                                             backgroundColor: '#4caf50',
                                                             mr: 1
                                                         }} />
-                                                        <Typography 
-                                                            variant="caption" 
-                                                            sx={{ 
+                                                        <Typography
+                                                            variant="caption"
+                                                            sx={{
                                                                 color: '#666666',
                                                                 fontSize: '0.8rem',
                                                                 fontWeight: 500
@@ -522,9 +504,9 @@ const Products: React.FC = () => {
                                                             backgroundColor: '#ff5722',
                                                             mr: 1
                                                         }} />
-                                                        <Typography 
-                                                            variant="caption" 
-                                                            sx={{ 
+                                                        <Typography
+                                                            variant="caption"
+                                                            sx={{
                                                                 color: '#666666',
                                                                 fontSize: '0.8rem',
                                                                 fontWeight: 500
@@ -571,9 +553,9 @@ const Products: React.FC = () => {
                                                 )}
 
                                                 <Box sx={{ mt: 'auto' }}>
-                                                    <Typography 
-                                                        variant="caption" 
-                                                        sx={{ 
+                                                    <Typography
+                                                        variant="caption"
+                                                        sx={{
                                                             color: '#999999',
                                                             fontSize: '0.8rem'
                                                         }}
@@ -591,9 +573,9 @@ const Products: React.FC = () => {
 
                     {/* Pagination */}
                     {searchMode === 'browse' && totalPages > 1 && (
-                        <Box sx={{ 
-                            display: 'flex', 
-                            justifyContent: 'center', 
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
                             mt: { xs: 6, md: 8 }
                         }}>
                             <Box sx={{
@@ -603,9 +585,9 @@ const Products: React.FC = () => {
                                 p: 4
                             }}>
                                 <Stack spacing={3} alignItems="center">
-                                    <Typography 
-                                        variant="body2" 
-                                        sx={{ 
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
                                             color: '#666666',
                                             fontSize: '0.9rem'
                                         }}
