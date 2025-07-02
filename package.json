@@ -4,7 +4,8 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "dev": "vite --host shmallergies.test --port 2812",
+        "dev-local": "vite --host shmallergies.test --port 2812",
         "dev-screen": "screen -dmS shmallergies-vite vite --host shmallergies.test --port 2812",
         "build": "tsc -b && vite build",
         "lint": "eslint .",

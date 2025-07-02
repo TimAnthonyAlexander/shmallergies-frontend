@@ -71,8 +71,38 @@ const CameraScanner: React.FC = () => {
 
   const initializeCamera = async () => {
     try {
-      // Request camera permission
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      // Check if we're in a secure context (HTTPS)
+      if (!window.isSecureContext) {
+        throw new Error('Camera access requires a secure context (HTTPS). Please use HTTPS or localhost.');
+      }
+
+      // Check if MediaDevices API is available
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Camera API not supported in this browser.');
+      }
+
+      // First check permission state if available
+      if ('permissions' in navigator) {
+        try {
+          const permission = await navigator.permissions.query({ name: 'camera' as PermissionName });
+          if (permission.state === 'denied') {
+            setCameraPermission('denied');
+            return;
+          }
+        } catch (permissionError) {
+          // Permission API might not be available, continue with getUserMedia
+          console.warn('Permission API not available:', permissionError);
+        }
+      }
+      
+      // Request camera permission with specific constraints for better Firefox compatibility
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'environment', // Prefer back camera
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        } 
+      });
       setCameraPermission('granted');
       
       // Stop the test stream
@@ -86,7 +116,8 @@ const CameraScanner: React.FC = () => {
       // Use back camera if available (usually has better quality for scanning)
       const backCamera = videoDevices.find(device => 
         device.label.toLowerCase().includes('back') || 
-        device.label.toLowerCase().includes('rear')
+        device.label.toLowerCase().includes('rear') ||
+        device.label.toLowerCase().includes('environment')
       );
       setCurrentDevice(backCamera?.deviceId || videoDevices[0]?.deviceId || '');
       
@@ -99,6 +130,19 @@ const CameraScanner: React.FC = () => {
     } catch (error) {
       console.error('Camera initialization failed:', error);
       setCameraPermission('denied');
+      
+      // Provide more specific error information
+      if (error instanceof Error) {
+        if (error.name === 'NotAllowedError') {
+          console.error('Camera permission denied by user');
+        } else if (error.name === 'NotFoundError') {
+          console.error('No camera found');
+        } else if (error.name === 'NotSupportedError') {
+          console.error('Camera not supported');
+        } else if (error.name === 'NotReadableError') {
+          console.error('Camera is already in use');
+        }
+      }
     }
   };
 
@@ -274,22 +318,38 @@ const CameraScanner: React.FC = () => {
           <Typography variant="h5" gutterBottom>
             Kamera-Zugriff erforderlich
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
             Bitte erlauben Sie den Zugriff auf Ihre Kamera, um Barcodes zu scannen.
           </Typography>
-          <Button
-            variant="contained"
-            onClick={initializeCamera}
-            startIcon={<Refresh />}
-          >
-            Erneut versuchen
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={() => navigate('/products')}
-          >
-            Zu Produkten
-          </Button>
+          
+          {/* Firefox-specific instructions */}
+          <Alert severity="info" sx={{ textAlign: 'left' }}>
+            <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+              Für Firefox-Browser:
+            </Typography>
+            <Typography variant="body2" component="div">
+              1. Stellen Sie sicher, dass die Seite über HTTPS läuft<br/>
+              2. Klicken Sie auf das Kamera-Symbol in der Adressleiste<br/>
+              3. Wählen Sie "Zulassen" für Kamera-Zugriff<br/>
+              4. Laden Sie die Seite neu, falls nötig
+            </Typography>
+          </Alert>
+          
+          <Stack direction="row" spacing={2} justifyContent="center">
+            <Button
+              variant="contained"
+              onClick={initializeCamera}
+              startIcon={<Refresh />}
+            >
+              Erneut versuchen
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => navigate('/products')}
+            >
+              Zu Produkten
+            </Button>
+          </Stack>
         </Stack>
       </Container>
     );

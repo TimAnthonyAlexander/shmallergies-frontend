@@ -1,5 +1,5 @@
 const API_BASE_URL = import.meta.env.DEV 
-  ? 'http://shmallergies.test:2811/api'
+  ? 'https://shmallergies.test:2811/api'
   : 'https://api.shmallergies.de/api';
 
 export interface ApiError {
