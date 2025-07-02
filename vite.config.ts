@@ -11,8 +11,16 @@ export default defineConfig({
     },
     build: {
         minify: true,
-        typescript: {
-            ignoreBuildErrors: true,
+        rollupOptions: {
+            onwarn(warning, defaultHandler) {
+                if (warning.code === 'UNUSED_EXTERNAL_IMPORT') return
+                defaultHandler(warning)
+            }
         },
+        target: 'esnext',
+        sourcemap: true
     },
+    esbuild: {
+        logOverride: { 'unused-import': 'silent' }
+    }
 })
