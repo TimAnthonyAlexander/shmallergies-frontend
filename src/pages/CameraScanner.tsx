@@ -12,7 +12,13 @@ import {
   CircularProgress,
   Card,
   CardContent,
-  Snackbar
+  Snackbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Fab
 } from '@mui/material';
 import {
   Close,
@@ -26,7 +32,8 @@ import {
   Cameraswitch,
   Inventory,
   ShoppingCart,
-  Add
+  Add,
+  Dialpad
 } from '@mui/icons-material';
 import { 
   BrowserMultiFormatReader, 
@@ -68,6 +75,9 @@ const CameraScanner: React.FC = () => {
   const [showWarningSnackbar, setShowWarningSnackbar] = useState(false);
   const [scanActive, setScanActive] = useState(false);
   const scanIntervalRef = useRef<number | null>(null);
+  const [isManualEntryOpen, setIsManualEntryOpen] = useState(false);
+  const [manualBarcode, setManualBarcode] = useState('');
+  const [manualBarcodeError, setManualBarcodeError] = useState('');
 
   // Initialize camera and scanner
   useEffect(() => {
@@ -364,6 +374,34 @@ const CameraScanner: React.FC = () => {
       <Warning sx={{ color: '#f44336' }} />;
   };
 
+  const handleManualEntryOpen = () => {
+    setIsManualEntryOpen(true);
+    setManualBarcode('');
+    setManualBarcodeError('');
+  };
+  
+  const handleManualEntryClose = () => {
+    setIsManualEntryOpen(false);
+  };
+  
+  const handleManualEntrySubmit = () => {
+    // Validate the input
+    if (!manualBarcode.trim()) {
+      setManualBarcodeError('Bitte geben Sie einen Barcode ein');
+      return;
+    }
+    
+    // Check if input contains only digits
+    if (!/^\d+$/.test(manualBarcode.trim())) {
+      setManualBarcodeError('Der Barcode sollte nur aus Zahlen bestehen');
+      return;
+    }
+    
+    // Process the barcode as if it was scanned
+    handleBarcodeDetected(manualBarcode.trim());
+    handleManualEntryClose();
+  };
+
   if (cameraPermission === 'denied') {
     return (
       <Container maxWidth="sm" sx={{ py: 8, textAlign: 'center' }}>
@@ -590,6 +628,21 @@ const CameraScanner: React.FC = () => {
             {scanCount} Produkt{scanCount !== 1 ? 'e' : ''} gescannt
           </Typography>
         </Box>
+
+        {/* Manual Entry FAB */}
+        <Fab
+          color="primary"
+          aria-label="add"
+          sx={{
+            position: 'absolute',
+            bottom: '45vh',
+            right: 16,
+            zIndex: 10
+          }}
+          onClick={handleManualEntryOpen}
+        >
+          <Dialpad />
+        </Fab>
       </Box>
       
       {/* Scanned Products List */}
@@ -656,7 +709,7 @@ const CameraScanner: React.FC = () => {
                             variant="text" 
                             size="small" 
                             startIcon={<Add />} 
-                            onClick={() => navigate(`/upload-product?upc=${scannedProduct.upcCode}`)}
+                            onClick={() => navigate(`/upload?upc=${scannedProduct.upcCode}`)}
                             sx={{ 
                               mt: 0.5, 
                               color: '#4caf50', 
@@ -682,7 +735,7 @@ const CameraScanner: React.FC = () => {
                     ) : (
                       <IconButton
                         size="small"
-                        onClick={() => navigate(`/upload-product?upc=${scannedProduct.upcCode}`)}
+                        onClick={() => navigate(`/upload?upc=${scannedProduct.upcCode}`)}
                         sx={{ color: '#4caf50' }}
                       >
                         <Add />
@@ -704,6 +757,40 @@ const CameraScanner: React.FC = () => {
           )}
         </Stack>
       </Box>
+      
+      {/* Manual Entry Dialog */}
+      <Dialog open={isManualEntryOpen} onClose={handleManualEntryClose}>
+        <DialogTitle>Barcode manuell eingeben</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="barcode"
+            label="Barcode"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={manualBarcode}
+            onChange={(e) => setManualBarcode(e.target.value)}
+            error={!!manualBarcodeError}
+            helperText={manualBarcodeError}
+            autoComplete="off"
+            inputProps={{ 
+              inputMode: 'numeric',
+              pattern: '[0-9]*'
+            }}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                handleManualEntrySubmit();
+              }
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleManualEntryClose}>Abbrechen</Button>
+          <Button onClick={handleManualEntrySubmit} variant="contained">Suchen</Button>
+        </DialogActions>
+      </Dialog>
       
       {/* Success Snackbar */}
       <Snackbar
