@@ -69,27 +69,27 @@ export class ApiClient {
 
     // Auth endpoints
     async signup(data: { name: string; email: string; password: string; password_confirmation: string }) {
-        return this.request<{ message: string; user: any; token: string }>('/auth/signup', {
+        return this.request<{ message: string; user: any; token: string }>('/v1/auth/signup', {
             method: 'POST',
             body: JSON.stringify(data),
         });
     }
 
     async login(data: { email: string; password: string }) {
-        return this.request<{ message: string; user: any; token: string }>('/auth/login', {
+        return this.request<{ message: string; user: any; token: string }>('/v1/auth/login', {
             method: 'POST',
             body: JSON.stringify(data),
         });
     }
 
     async logout() {
-        return this.request<{ message: string }>('/auth/logout', {
+        return this.request<{ message: string }>('/v1/auth/logout', {
             method: 'POST',
         });
     }
 
     async resendVerificationEmail(data: { email: string }) {
-        return this.request<{ message: string }>('/auth/email/resend', {
+        return this.request<{ message: string }>('/v1/auth/email/resend', {
             method: 'POST',
             body: JSON.stringify(data),
         });
@@ -97,29 +97,29 @@ export class ApiClient {
 
     // User endpoints
     async getProfile() {
-        return this.request<{ message: string; user: any }>('/user');
+        return this.request<{ message: string; user: any }>('/v1/user');
     }
 
     async getUserAllergies() {
-        return this.request<{ message: string; allergies: any[] }>('/user/allergies');
+        return this.request<{ message: string; allergies: any[] }>('/v1/user/allergies');
     }
 
     async addUserAllergy(data: { allergy_text: string }) {
-        return this.request<{ message: string; allergy: any }>('/user/allergies', {
+        return this.request<{ message: string; allergy: any }>('/v1/user/allergies', {
             method: 'POST',
             body: JSON.stringify(data),
         });
     }
 
     async updateUserAllergy(id: number, data: { allergy_text: string }) {
-        return this.request<{ message: string; allergy: any }>(`/user/allergies/${id}`, {
+        return this.request<{ message: string; allergy: any }>(`/v1/user/allergies/${id}`, {
             method: 'PUT',
             body: JSON.stringify(data),
         });
     }
 
     async deleteUserAllergy(id: number) {
-        return this.request<{ message: string }>(`/user/allergies/${id}`, {
+        return this.request<{ message: string }>(`/v1/user/allergies/${id}`, {
             method: 'DELETE',
         });
     }
@@ -131,7 +131,7 @@ export class ApiClient {
             is_safe: boolean;
             potential_conflicts: string[];
             product_allergens: string[];
-        }>(`/user/product-safety/${productId}`);
+        }>(`/v1/user/product-safety/${productId}`);
     }
 
     // Product endpoints
@@ -143,7 +143,7 @@ export class ApiClient {
             last_page: number;
             per_page: number;
             total: number;
-        }>(`/products?page=${page}&per_page=${perPage}`);
+        }>(`/v1/products?page=${page}&per_page=${perPage}`);
     }
 
     async searchProducts(query: string, limit: number = 10) {
@@ -151,21 +151,21 @@ export class ApiClient {
             message: string;
             products: any[];
             total: number;
-        }>(`/products/search?query=${encodeURIComponent(query)}&limit=${limit}`);
+        }>(`/v1/products/search?query=${encodeURIComponent(query)}&limit=${limit}`);
     }
 
     async getProduct(id: number) {
         return this.request<{
             message: string;
             product: any;
-        }>(`/products/${id}`);
+        }>(`/v1/products/${id}`);
     }
 
     async getProductByUpc(upcCode: string) {
         return this.request<{
             message: string;
             product: any;
-        }>(`/products/upc/${upcCode}`);
+        }>(`/v1/products/upc/${upcCode}`);
     }
 
     async getProductsByAllergens(allergens: string[], limit: number = 10) {
@@ -174,12 +174,12 @@ export class ApiClient {
             products: any[];
             total: number;
             searched_allergens: string[];
-        }>(`/products/allergens?allergens=${allergens.join(',')}&limit=${limit}`);
+        }>(`/v1/products/allergens?allergens=${allergens.join(',')}&limit=${limit}`);
     }
 
     async createProduct(formData: FormData) {
         // Handle FormData separately to avoid Content-Type header conflicts
-        const url = `${this.baseUrl}/products`;
+        const url = `${this.baseUrl}/v1/products`;
         const headers: Record<string, string> = {
             'Accept': 'application/json',
         };
@@ -209,7 +209,7 @@ export class ApiClient {
     }
 
     async ping() {
-        return this.request<{ message: string; timestamp: string }>('/ping');
+        return this.request<{ message: string; timestamp: string }>('/v1/ping');
     }
 }
 
