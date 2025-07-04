@@ -1,29 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-    AppBar,
-    Toolbar,
-    Typography,
-    Button,
-    IconButton,
-    Menu,
-    MenuItem,
-    Box,
-    Avatar,
-    Divider,
-    useTheme,
-    useMediaQuery,
-    Badge,
-    Tooltip
-} from '@mui/material';
-import {
-    Menu as MenuIcon,
-    Upload,
-    Person,
-    ExitToApp,
-    Home,
-    QrCodeScanner
-} from '@mui/icons-material';
+import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box, Avatar, Divider, useTheme, useMediaQuery, Tooltip } from '@mui/material';
+import { Menu as MenuIcon, Upload, Person, ExitToApp, Home, QrCodeScanner } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Header: React.FC = () => {

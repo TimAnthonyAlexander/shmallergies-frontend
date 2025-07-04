@@ -380,7 +380,7 @@ const UploadProduct: React.FC = () => {
                                 >
                                     <input
                                         type="file"
-                                        accept="image/jpeg,image/png,image/jpg,image/gif"
+                                        accept="image/jpeg,image/png,image/jpg,image/gif,image/heic,image/heif"
                                         required
                                         style={{ display: 'none' }}
                                         onChange={handleImageChange}
@@ -419,7 +419,7 @@ const UploadProduct: React.FC = () => {
                                                 textAlign: 'center'
                                             }}
                                         >
-                                            PNG, JPG up to 2MB
+                                            PNG, JPG, HEIC up to 2MB
                                         </Typography>
                                     </Box>
                                 </Box>
