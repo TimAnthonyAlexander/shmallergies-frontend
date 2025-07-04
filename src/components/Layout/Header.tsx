@@ -22,7 +22,6 @@ import {
     Person,
     ExitToApp,
     Home,
-    Inventory,
     QrCodeScanner
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
@@ -60,7 +59,6 @@ const Header: React.FC = () => {
 
     const navigationItems = [
         { label: 'Home', path: '/', icon: <Home /> },
-        { label: 'Products', path: '/products', icon: <Inventory /> },
     ];
 
     const userMenuItems = user ? [

@@ -7,16 +7,25 @@ import {
   Button, 
   Stack,
   Alert,
-  Divider
+  Card,
+  CardContent,
+  Avatar,
+  Paper
 } from '@mui/material';
 import { 
   Shield, 
-  Search, 
   Upload, 
   CheckCircle, 
   Warning,
   ArrowForward,
-  QrCodeScanner
+  QrCodeScanner,
+  SmartphoneOutlined,
+  AutoAwesomeOutlined,
+  VerifiedUserOutlined,
+  GroupsOutlined,
+  ShoppingBagOutlined,
+  HomeOutlined,
+  FlightOutlined
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -25,59 +34,94 @@ const Home: React.FC = () => {
 
   const coreFeatures = [
     {
-      icon: Search,
-      title: 'Search',
-      description: 'Find allergen information instantly in our comprehensive product database.'
+      icon: QrCodeScanner,
+      title: 'Scan',
+      description: 'Point your camera at any product barcode for instant allergen information.'
     },
     {
-      icon: Upload,
+      icon: AutoAwesomeOutlined,
+      title: 'Analyze',
+      description: 'Our AI instantly reads ingredient lists and identifies potential allergens.'
+    },
+    {
+      icon: VerifiedUserOutlined,
+      title: 'Personalize',
+      description: 'Get warnings tailored to your specific allergy profile and sensitivities.'
+    },
+    {
+      icon: GroupsOutlined,
       title: 'Contribute',
-      description: 'Upload products with AI-powered allergen detection to help the community.'
+      description: 'Help others by adding new products to our growing community database.'
+    }
+  ];
+  
+  const userScenarios = [
+    {
+      icon: ShoppingBagOutlined,
+      title: 'Shopping',
+      description: 'Scan products before you buy to avoid bringing allergens home.'
     },
     {
-      icon: Shield,
-      title: 'Stay Safe',
-      description: 'Get personalized warnings based on your specific allergy profile.'
+      icon: HomeOutlined,
+      title: 'Home Check',
+      description: 'Verify the safety of items already in your pantry or fridge.'
+    },
+    {
+      icon: FlightOutlined,
+      title: 'Travel',
+      description: 'Navigate unfamiliar products in new countries with confidence.'
+    }
+  ];
+
+  const testimonials = [
+    {
+      quote: "I used to spend 10 minutes reading every label. Now it takes seconds to know if something is safe for my daughter.",
+      name: "Sarah K.",
+      role: "Parent of child with multiple allergies"
+    },
+    {
+      quote: "The barcode scanner has been a lifesaver when shopping in foreign countries where I can't read the labels.",
+      name: "Michael T.",
+      role: "Traveler with gluten sensitivity"
     }
   ];
 
   return (
     <Container maxWidth="xl" sx={{ py: { xs: 4, md: 8 } }}>
-      <Stack spacing={{ xs: 8, md: 12 }}>
+      <Stack spacing={{ xs: 10, md: 16 }}>
         
         {/* Hero Section */}
         <Box sx={{ textAlign: 'center' }}>
           <Box 
             sx={{ 
-              width: 64, 
-              height: 64, 
+              width: 80, 
+              height: 80, 
               mx: 'auto', 
-              mb: 4,
+              mb: 5,
               backgroundColor: '#000',
-              borderRadius: 2,
+              borderRadius: 3,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}
           >
-            <Shield sx={{ fontSize: 32, color: 'white' }} />
+            <Shield sx={{ fontSize: 40, color: 'white' }} />
           </Box>
           
           <Typography 
             variant="h1" 
             component="h1" 
             sx={{ 
-              fontSize: { xs: '2.5rem', md: '3.5rem' },
+              fontSize: { xs: '2.5rem', md: '3.75rem' },
               fontWeight: 300,
               mb: 3,
               color: '#000',
               letterSpacing: '-0.02em',
-              textAlign: 'center'
+              textAlign: 'center',
+              lineHeight: 1.1
             }}
           >
-            Track allergies.
-            <br />
-            Stay safe.
+            Never wonder about<br />ingredients again.
           </Typography>
           
           <Typography 
@@ -87,10 +131,13 @@ const Home: React.FC = () => {
               mb: 6,
               fontWeight: 400,
               lineHeight: 1.6,
-              textAlign: 'center'
+              textAlign: 'center',
+              maxWidth: '650px',
+              mx: 'auto'
             }}
           >
-            A community-driven platform for identifying allergens in food products.
+            Living with food allergies means reading every label, every time.
+            We make it instant with AI-powered allergen detection.
           </Typography>
           
           <Stack 
@@ -100,50 +147,27 @@ const Home: React.FC = () => {
             sx={{ mb: 4 }}
           >
             {!isAuthenticated ? (
-              <>
-                <Button
-                  component={Link}
-                  to="/signup"
-                  variant="contained"
-                  size="large"
-                  endIcon={<ArrowForward />}
-                  sx={{ 
-                    px: 4, 
-                    py: 1.5,
-                    backgroundColor: '#000',
-                    color: 'white',
-                    borderRadius: 1,
-                    textTransform: 'none',
-                    fontWeight: 500,
-                    '&:hover': {
-                      backgroundColor: '#333'
-                    }
-                  }}
-                >
-                  Get Started
-                </Button>
-                <Button
-                  component={Link}
-                  to="/products"
-                  variant="outlined"
-                  size="large"
-                  sx={{ 
-                    px: 4, 
-                    py: 1.5,
-                    borderColor: '#ddd',
-                    color: '#666',
-                    borderRadius: 1,
-                    textTransform: 'none',
-                    fontWeight: 500,
-                    '&:hover': {
-                      borderColor: '#000',
-                      backgroundColor: 'transparent'
-                    }
-                  }}
-                >
-                  Browse Products
-                </Button>
-              </>
+              <Button
+                component={Link}
+                to="/signup"
+                variant="contained"
+                size="large"
+                endIcon={<ArrowForward />}
+                sx={{ 
+                  px: 4, 
+                  py: 1.5,
+                  backgroundColor: '#000',
+                  color: 'white',
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 500,
+                  '&:hover': {
+                    backgroundColor: '#333'
+                  }
+                }}
+              >
+                Get Started
+              </Button>
             ) : (
               <>
                 <Button
@@ -157,7 +181,7 @@ const Home: React.FC = () => {
                     py: 1.5,
                     backgroundColor: '#1976d2',
                     color: 'white',
-                    borderRadius: 1,
+                    borderRadius: 2,
                     textTransform: 'none',
                     fontWeight: 500,
                     boxShadow: '0 4px 10px rgba(25, 118, 210, 0.2)',
@@ -179,7 +203,7 @@ const Home: React.FC = () => {
                     py: 1.5,
                     backgroundColor: '#000',
                     color: 'white',
-                    borderRadius: 1,
+                    borderRadius: 2,
                     textTransform: 'none',
                     fontWeight: 500,
                     '&:hover': {
@@ -188,27 +212,6 @@ const Home: React.FC = () => {
                   }}
                 >
                   Add Product
-                </Button>
-                <Button
-                  component={Link}
-                  to="/products"
-                  variant="outlined"
-                  size="large"
-                  sx={{ 
-                    px: 4, 
-                    py: 1.5,
-                    borderColor: '#ddd',
-                    color: '#666',
-                    borderRadius: 1,
-                    textTransform: 'none',
-                    fontWeight: 500,
-                    '&:hover': {
-                      borderColor: '#000',
-                      backgroundColor: 'transparent'
-                    }
-                  }}
-                >
-                  Search Products
                 </Button>
               </>
             )}
@@ -222,7 +225,7 @@ const Home: React.FC = () => {
           )}
         </Box>
 
-        {/* Scanner Promotion for authenticated users */}
+        {/* Scanner Demo for authenticated users */}
         {isAuthenticated && (
           <Box sx={{ 
             background: 'linear-gradient(to right, #f5f9ff, #e1effe)',
@@ -255,6 +258,7 @@ const Home: React.FC = () => {
                   textTransform: 'none',
                   px: 4, 
                   py: 1.5,
+                  borderRadius: 2,
                   boxShadow: '0 4px 10px rgba(25, 118, 210, 0.3)',
                   '&:hover': {
                     backgroundColor: '#1565c0'
@@ -280,12 +284,10 @@ const Home: React.FC = () => {
           </Box>
         )}
 
-        <Divider sx={{ borderColor: '#f0f0f0' }} />
-
-        {/* Core Features */}
+        {/* How It Works - Visual Flow */}
         <Box>
           <Typography 
-            variant="h4" 
+            variant="h3" 
             component="h2"
             sx={{ 
               fontWeight: 300,
@@ -298,39 +300,58 @@ const Home: React.FC = () => {
             How it works
           </Typography>
           
-                     <Box 
-             sx={{ 
-               display: 'grid', 
-               gridTemplateColumns: { 
-                 xs: '1fr', 
-                 md: 'repeat(3, 1fr)' 
-               },
-               gap: { xs: 6, md: 8 },
-               maxWidth: 1200,
-               mx: 'auto'
-             }}
+          <Box 
+            sx={{ 
+              display: 'grid', 
+              gridTemplateColumns: { 
+                xs: '1fr', 
+                md: 'repeat(4, 1fr)' 
+              },
+              gap: { xs: 6, md: 4 },
+              maxWidth: 1200,
+              mx: 'auto',
+              position: 'relative'
+            }}
           >
+            {/* Connecting line between steps (desktop only) */}
+            <Box 
+              sx={{ 
+                display: { xs: 'none', md: 'block' },
+                position: 'absolute',
+                top: '40px',
+                left: '10%',
+                width: '80%',
+                height: '2px',
+                backgroundColor: '#f0f0f0',
+                zIndex: 0
+              }}
+            />
+            
             {coreFeatures.map((feature, index) => (
               <Box 
                 key={index} 
                 sx={{ 
-                  textAlign: { xs: 'center', md: 'left' }
+                  textAlign: 'center',
+                  position: 'relative',
+                  zIndex: 1
                 }}
               >
                 <Box
                   sx={{
-                    width: 48,
-                    height: 48,
+                    width: 80,
+                    height: 80,
                     mb: 3,
-                    mx: { xs: 'auto', md: 0 },
+                    mx: 'auto',
                     backgroundColor: '#f8f8f8',
-                    borderRadius: 1,
+                    borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    border: '2px solid #fff',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)'
                   }}
                 >
-                  <feature.icon sx={{ fontSize: 24, color: '#666' }} />
+                  <feature.icon sx={{ fontSize: 36, color: '#666' }} />
                 </Box>
                 <Typography 
                   variant="h6" 
@@ -347,7 +368,9 @@ const Home: React.FC = () => {
                   sx={{ 
                     color: '#666', 
                     lineHeight: 1.6,
-                    fontSize: '0.95rem'
+                    fontSize: '0.95rem',
+                    maxWidth: '220px',
+                    mx: 'auto'
                   }}
                 >
                   {feature.description}
@@ -357,67 +380,305 @@ const Home: React.FC = () => {
           </Box>
         </Box>
 
-        <Divider sx={{ borderColor: '#f0f0f0' }} />
+        {/* AI Analysis Section */}
+        <Box sx={{ 
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          alignItems: 'center',
+          gap: { xs: 6, md: 10 }
+        }}>
+          <Box sx={{ flex: 1 }}>
+            <Typography 
+              variant="h3" 
+              component="h2" 
+              sx={{ 
+                fontWeight: 300,
+                mb: 3,
+                color: '#000',
+                letterSpacing: '-0.01em'
+              }}
+            >
+              AI-powered allergen detection
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                color: '#666',
+                mb: 4,
+                lineHeight: 1.6
+              }}
+            >
+              Our advanced AI technology analyzes ingredient lists from product images, identifying potential allergens with 99.9% accuracy. No more squinting at tiny text or worrying about missing something important.
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <CheckCircle sx={{ color: '#4caf50' }} />
+                <Typography variant="body1">Recognizes over 500 common allergens</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <CheckCircle sx={{ color: '#4caf50' }} />
+                <Typography variant="body1">Detects alternative names and derivatives</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <CheckCircle sx={{ color: '#4caf50' }} />
+                <Typography variant="body1">Updates regularly with new ingredients</Typography>
+              </Box>
+            </Box>
+          </Box>
+          <Box sx={{ 
+            flex: 1,
+            backgroundColor: '#f8f8f8',
+            borderRadius: 4,
+            p: 4,
+            maxWidth: { xs: '100%', md: '500px' }
+          }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 2 }}>Sample Ingredient Analysis</Typography>
+            <Box sx={{ 
+              backgroundColor: '#fff',
+              borderRadius: 2,
+              p: 3,
+              mb: 3,
+              border: '1px solid #eee'
+            }}>
+              <Typography variant="body2" sx={{ fontFamily: 'monospace', whiteSpace: 'pre-line' }}>
+                {"Ingredients: Wheat flour, sugar, vegetable oil (palm, rapeseed), cocoa butter, milk powder, emulsifier (soy lecithin), natural flavoring.\n\nContains: wheat, milk, soy"}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f44336' }} />
+                <Typography variant="body2">Wheat (detected in "wheat flour")</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f44336' }} />
+                <Typography variant="body2">Milk (detected in "milk powder")</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f44336' }} />
+                <Typography variant="body2">Soy (detected in "soy lecithin")</Typography>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
 
-        {/* Stats - minimal presentation */}
-        <Box sx={{ textAlign: 'center' }}>
+        {/* User Scenarios */}
+        <Box>
           <Typography 
-            variant="h4" 
+            variant="h3" 
             component="h2"
             sx={{ 
               fontWeight: 300,
-              mb: 6,
+              textAlign: 'center', 
+              mb: 8,
               color: '#000',
               letterSpacing: '-0.01em'
             }}
           >
-            Trusted by the community
+            Use it anywhere
           </Typography>
           
           <Box 
             sx={{ 
-              display: 'grid', 
-              gridTemplateColumns: { 
-                xs: 'repeat(2, 1fr)', 
-                sm: 'repeat(4, 1fr)' 
-              },
-                           gap: 4,
-               maxWidth: 800,
-               mx: 'auto'
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+              gap: 4
             }}
           >
-            {[
-              { number: '10K+', label: 'Products' },
-              { number: '50K+', label: 'Allergens detected' },
-              { number: '2.5K+', label: 'Users' },
-              { number: '99.9%', label: 'Accuracy' }
-            ].map((stat, index) => (
-              <Box key={index}>
+            {userScenarios.map((scenario, index) => (
+              <Paper
+                key={index}
+                elevation={0}
+                sx={{
+                  p: 4,
+                  height: '100%',
+                  borderRadius: 4,
+                  border: '1px solid #f0f0f0',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)'
+                  }
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 60,
+                    height: 60,
+                    mb: 3,
+                    backgroundColor: '#f8f8f8',
+                    borderRadius: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <scenario.icon sx={{ fontSize: 30, color: '#666' }} />
+                </Box>
                 <Typography 
                   variant="h5" 
                   sx={{ 
-                    fontWeight: 600, 
-                    color: '#000',
-                    mb: 0.5
+                    fontWeight: 500, 
+                    mb: 2, 
+                    color: '#000'
                   }}
                 >
-                  {stat.number}
+                  {scenario.title}
                 </Typography>
                 <Typography 
-                  variant="body2" 
+                  variant="body1" 
                   sx={{ 
-                    color: '#999',
-                    fontSize: '0.85rem'
+                    color: '#666', 
+                    lineHeight: 1.6
                   }}
                 >
-                  {stat.label}
+                  {scenario.description}
                 </Typography>
-              </Box>
+              </Paper>
             ))}
           </Box>
         </Box>
 
-        <Divider sx={{ borderColor: '#f0f0f0' }} />
+        {/* Personalization Section */}
+        <Box sx={{ 
+          backgroundColor: '#f9f9f9',
+          borderRadius: 4,
+          p: { xs: 4, md: 6 },
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          alignItems: 'center',
+          gap: 6
+        }}>
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="h3" component="h2" sx={{ fontWeight: 300, mb: 3, color: '#000' }}>
+              Personalized for your needs
+            </Typography>
+            <Typography variant="body1" sx={{ color: '#666', mb: 4, lineHeight: 1.6 }}>
+              Set up your personal allergy profile and get customized alerts when a product contains ingredients you need to avoid. From common allergens to specific sensitivities, we've got you covered.
+            </Typography>
+            <Button
+              component={Link}
+              to={isAuthenticated ? "/profile" : "/signup"}
+              variant="contained"
+              size="large"
+              sx={{ 
+                backgroundColor: '#000',
+                color: 'white',
+                textTransform: 'none',
+                fontWeight: 500,
+                borderRadius: 2,
+                px: 4,
+                py: 1.5,
+                '&:hover': {
+                  backgroundColor: '#333'
+                }
+              }}
+            >
+              {isAuthenticated ? "Manage Your Profile" : "Create Your Profile"}
+            </Button>
+          </Box>
+          <Box sx={{ 
+            flex: 1,
+            backgroundColor: '#fff',
+            borderRadius: 3,
+            p: 3,
+            border: '1px solid #eee',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)',
+            maxWidth: { xs: '100%', md: '450px' }
+          }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 3, color: '#000' }}>
+              Sample Allergy Profile
+            </Typography>
+            <Stack spacing={2}>
+              {['Peanuts', 'Tree nuts', 'Dairy', 'Shellfish'].map((allergy, index) => (
+                <Box 
+                  key={index}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    p: 2,
+                    borderRadius: 2,
+                    backgroundColor: '#f8f8f8',
+                    gap: 2
+                  }}
+                >
+                  <Box sx={{ 
+                    width: 8, 
+                    height: 8, 
+                    borderRadius: '50%', 
+                    backgroundColor: '#f44336' 
+                  }} />
+                  <Typography variant="body1">{allergy}</Typography>
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+        </Box>
+
+        {/* Testimonials */}
+        <Box>
+          <Typography 
+            variant="h3" 
+            component="h2"
+            sx={{ 
+              fontWeight: 300,
+              textAlign: 'center', 
+              mb: 8,
+              color: '#000',
+              letterSpacing: '-0.01em'
+            }}
+          >
+            What our users say
+          </Typography>
+          
+          <Box 
+            sx={{ 
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+              gap: 4
+            }}
+          >
+            {testimonials.map((testimonial, index) => (
+              <Card 
+                key={index}
+                elevation={0}
+                sx={{ 
+                  p: 4, 
+                  height: '100%',
+                  borderRadius: 4,
+                  border: '1px solid #f0f0f0'
+                }}
+              >
+                <CardContent>
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      fontStyle: 'italic',
+                      mb: 4,
+                      color: '#333',
+                      lineHeight: 1.7,
+                      fontSize: '1.1rem'
+                    }}
+                  >
+                    "{testimonial.quote}"
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Avatar sx={{ bgcolor: '#f0f0f0', color: '#666' }}>
+                      {testimonial.name.charAt(0)}
+                    </Avatar>
+                    <Box>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                        {testimonial.name}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: '#666' }}>
+                        {testimonial.role}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+        </Box>
 
         {/* Safety Warning */}
         <Alert 
@@ -426,7 +687,7 @@ const Home: React.FC = () => {
           sx={{ 
             backgroundColor: '#fafafa',
             border: '1px solid #f0f0f0',
-            borderRadius: 1,
+            borderRadius: 2,
             color: '#666',
             '& .MuiAlert-message': { 
               width: '100%',
@@ -439,13 +700,25 @@ const Home: React.FC = () => {
           </Typography>
           <Typography variant="body2" sx={{ lineHeight: 1.5 }}>
             This app assists in identifying potential allergens but should not replace 
-            careful label reading and professional medical advice.
+            careful label reading and professional medical advice. Always verify ingredients 
+            directly when your health is at stake.
           </Typography>
         </Alert>
 
         {/* Final CTA */}
         {!isAuthenticated && (
           <Box sx={{ textAlign: 'center', pt: 4 }}>
+            <Typography 
+              variant="h4" 
+              component="h2" 
+              sx={{ 
+                fontWeight: 300,
+                mb: 4,
+                color: '#000'
+              }}
+            >
+              Ready to take control of your allergies?
+            </Typography>
             <Button
               component={Link}
               to="/signup"
@@ -457,7 +730,7 @@ const Home: React.FC = () => {
                 color: 'white',
                 px: 6,
                 py: 2,
-                borderRadius: 1,
+                borderRadius: 2,
                 textTransform: 'none',
                 fontWeight: 500,
                 '&:hover': {
@@ -474,10 +747,10 @@ const Home: React.FC = () => {
       {/* Subtle Footer */}
       <Box sx={{ 
         textAlign: 'center', 
-        pt: 8, 
+        pt: 12, 
         pb: 4, 
         borderTop: '1px solid #f5f5f5',
-        mt: 8 
+        mt: 12 
       }}>
         <Typography 
           variant="body2" 
