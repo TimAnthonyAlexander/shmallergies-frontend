@@ -36,7 +36,8 @@ import {
     ShoppingCart,
     Add,
     Dialpad,
-    History
+    History,
+    DeleteOutline
 } from '@mui/icons-material';
 import {
     BrowserMultiFormatReader,
@@ -57,6 +58,8 @@ interface ScannedProduct {
     isLoading: boolean;
     error?: string;
 }
+
+const STORAGE_KEY = 'shmallergies_scanned_products';
 
 const CameraScanner: React.FC = () => {
     const navigate = useNavigate();
@@ -91,6 +94,32 @@ const CameraScanner: React.FC = () => {
             stopScanning();
         };
     }, []);
+
+    // Load scanned products from localStorage on component mount
+    useEffect(() => {
+        const storedProducts = localStorage.getItem(STORAGE_KEY);
+        if (storedProducts) {
+            try {
+                const parsedProducts = JSON.parse(storedProducts) as ScannedProduct[];
+                setScannedProducts(parsedProducts);
+                
+                // Check if any products are allergic to set the indicator
+                const hasAllergic = parsedProducts.some(
+                    product => product.safetyCheck && !product.safetyCheck.is_safe
+                );
+                setHasAllergicProducts(hasAllergic);
+            } catch (error) {
+                console.error('Error parsing stored products:', error);
+            }
+        }
+    }, []);
+
+    // Save scanned products to localStorage whenever they change
+    useEffect(() => {
+        if (scannedProducts.length > 0) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(scannedProducts));
+        }
+    }, [scannedProducts]);
 
     const initializeCamera = async () => {
         try {
@@ -276,7 +305,7 @@ const CameraScanner: React.FC = () => {
             isLoading: true
         };
 
-        setScannedProducts(prev => [newScannedProduct, ...prev.slice(0, 9)]); // Keep last 10 scans
+        setScannedProducts(prev => [newScannedProduct, ...prev.slice(0, 19)]); // Keep last 20 scans
 
         // Clear the last scanned code after 3 seconds
         setTimeout(() => {
@@ -300,13 +329,18 @@ const CameraScanner: React.FC = () => {
             }
 
             // Update the scanned product
-            setScannedProducts(prev =>
-                prev.map(item =>
+            setScannedProducts(prev => {
+                const updatedProducts = prev.map(item =>
                     item.upcCode === upcCode
                         ? { ...item, product, safetyCheck, isLoading: false }
                         : item
-                )
-            );
+                );
+                
+                // Save to localStorage
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProducts));
+                
+                return updatedProducts;
+            });
 
             // Update allergic products indicator
             if (safetyCheck && !safetyCheck.is_safe) {
@@ -324,13 +358,18 @@ const CameraScanner: React.FC = () => {
 
         } catch (error) {
             console.error('Product lookup failed:', error);
-            setScannedProducts(prev =>
-                prev.map(item =>
+            setScannedProducts(prev => {
+                const updatedProducts = prev.map(item =>
                     item.upcCode === upcCode
                         ? { ...item, isLoading: false, error: 'Product not found' }
                         : item
-                )
-            );
+                );
+                
+                // Save to localStorage
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProducts));
+                
+                return updatedProducts;
+            });
         }
     }, [lastScannedCode, isAuthenticated]);
 
@@ -418,6 +457,14 @@ const CameraScanner: React.FC = () => {
 
     const handleHistoryModalClose = () => {
         setIsHistoryModalOpen(false);
+    };
+
+    // Function to clear scan history
+    const handleClearHistory = () => {
+        setScannedProducts([]);
+        setHasAllergicProducts(false);
+        localStorage.removeItem(STORAGE_KEY);
+        handleHistoryModalClose();
     };
 
     if (cameraPermission === 'denied') {
@@ -901,9 +948,21 @@ const CameraScanner: React.FC = () => {
                         <History fontSize="small" color="action" />
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>Scan History</Typography>
                     </Stack>
-                    <IconButton size="small" onClick={handleHistoryModalClose}>
-                        <Close />
-                    </IconButton>
+                    <Stack direction="row" spacing={1}>
+                        {scannedProducts.length > 0 && (
+                            <IconButton 
+                                size="small" 
+                                onClick={handleClearHistory}
+                                color="error"
+                                title="Clear history"
+                            >
+                                <DeleteOutline />
+                            </IconButton>
+                        )}
+                        <IconButton size="small" onClick={handleHistoryModalClose}>
+                            <Close />
+                        </IconButton>
+                    </Stack>
                 </DialogTitle>
                 <DialogContent sx={{ p: 0 }}>
                     <Stack spacing={0} divider={<Box sx={{ borderBottom: '1px solid rgba(0,0,0,0.06)' }} />}>
